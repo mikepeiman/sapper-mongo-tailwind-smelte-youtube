@@ -304,6 +304,7 @@
     <div class="grid grid-cols-4 col-start-2">
         <div class="col-span-3">
             <TextField
+            autocomplete
                 bind:value={channelName}
                 on:keypress={(e) => handle(e)}
                 id="channelName"
@@ -344,13 +345,17 @@
         </div>
         <Button
             class="yt-button h-14 self-start mt-2 col-start-4" 
-                        on:click={() => getVideosByPlaylistId(uploadsId)}>Get Videos</Button
+            on:click={() => getVideosByPlaylistId(uploadsId)}>Get Videos</Button
         >
     </div>
     <div class="grid grid-cols-4 col-start-5">
         <div class="col-span-3">
             <TextField 
-                replace={{}}
+                remove="px-4 pl-4 pt-4"
+                add="pl-1"
+                labelRemove="pl-4 pt-4 px-4"
+                labelAdd="pt-3 pl-2 text-l label-transition"
+                iconClass="pr-0"
                 bind:value={playlistId}
                 on:keypress={(e) => handle(e)}
                 id="playlistId"
