@@ -1,7 +1,7 @@
 {
-  "name": "ssm-starter",
-  "description": "Starter project for Sapper-Svelte-Mongo-based applications",
-  "version": "0.0.1",
+  "name": "SSMT-YT starter",
+  "description": "Starter project for Svelte-Sapper-Mongo-Tailwind-based applications",
+  "version": "0.0.2",
   "scripts": {
     "dev": "sapper dev",
     "build": "yarn run build:tailwindcss && sapper build --legacy",
