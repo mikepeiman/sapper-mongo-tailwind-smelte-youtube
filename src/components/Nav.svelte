@@ -58,6 +58,5 @@
 		<li><a rel=prefetch class:selected='{segment === "blog"}' href='blog'>blog</a></li>
 		<li><a rel=prefetch class:selected='{segment === "customer"}' href='customer'>customer</a></li>
 		<li><a rel=prefetch class:selected='{segment === "youtube"}' href='youtube'>youtube</a></li>
-		<li><a rel=prefetch class:selected='{segment === "youtube2"}' href='youtube2'>youtube2</a></li>
 	</ul>
 </nav>

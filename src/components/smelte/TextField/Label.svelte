@@ -12,6 +12,9 @@
   // for outlined button label
   export let bgColor = "white";
   export let dense = false;
+  export let labelRemove = "";
+  export let labelAdd = "";
+  export let labelReplace = {};
 
   let labelDefault = `pt-4 absolute top-0 label-transition block pb-2 px-4 pointer-events-none cursor-text`;
 
@@ -29,7 +32,7 @@
   const l = new ClassBuilder(labelClasses, labelDefault);
 
   let lClasses = i => i;
-
+  $: console.log(`Label component labelClasses ${labelClasses} $$props `, $$props)
   $: lClasses = l
       .flush()
       .add(txt(), focused && !error)
@@ -43,8 +46,11 @@
       .remove('pt-4', dense)
       .add('pt-3', dense)
       .add(add)
+      .add(labelAdd)
       .remove(remove)
+      .remove(labelRemove)
       .replace(replace)
+      .replace(labelReplace)
       .get();
 
   const props = filterProps([

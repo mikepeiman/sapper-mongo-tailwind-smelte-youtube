@@ -146,7 +146,7 @@
     function lsget(item) {
         let ls = localStorage.getItem(item);
         if (ls) {
-            console.log(`💎⛏ item ls ${ls}`);
+            // console.log(`💎⛏ item ls ${ls}`);
             return JSON.parse(ls);
         } else {
             return "not found in ls";

@@ -11,6 +11,7 @@
     let channelDescription, channelDetails, channelThumbnails, videoDetails;
     import Button from "./smelte/Button";
     import TextField from "./smelte/TextField";
+    import Label from "./smelte/TextField/Label.svelte";
     // import { get } from '../scripts/_db.js'
     import {
         storeCurrentDisplayContext,
@@ -342,14 +343,14 @@
             />
         </div>
         <Button
-            class="yt-button h-14 self-start mt-2 col-start-4" replace={{"px-4": "px-0","pl-4": "pl-0","pt-6":"pt-0"}}
+            class="yt-button h-14 self-start mt-2 col-start-4" 
                         on:click={() => getVideosByPlaylistId(uploadsId)}>Get Videos</Button
         >
     </div>
     <div class="grid grid-cols-4 col-start-5">
         <div class="col-span-3">
-            <TextField
-            replace={{"px-4": "px-0","pl-4": "pl-0","pt-6":"pt-0"}}
+            <TextField 
+                replace={{}}
                 bind:value={playlistId}
                 on:keypress={(e) => handle(e)}
                 id="playlistId"

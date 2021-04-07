@@ -40,6 +40,9 @@
   export let add = "";
   export let remove = "";
   export let replace = {};
+  export let labelRemove = "";
+  export let labelAdd = "";
+  export let labelReplace = {};
 
   export let inputClasses = inputDefault;
   export let classes = classesDefault;
@@ -128,6 +131,9 @@
     'bgColor',
     'disabled',
     'replace',
+    'labelReplace',
+    'labelAdd',
+    'labelRemove',
     'remove',
     'small',
   ], $$props);
@@ -146,6 +152,9 @@
       {prepend}
       {color}
       {bgColor}
+      {labelRemove}
+      {labelAdd}
+      {labelReplace}
       dense={dense && !outlined}
     >{label}</Label>
   </slot>
