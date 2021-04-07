@@ -1,5 +1,5 @@
 <script>
-    import Button from "./Button.svelte";
+    import Button from "./smelte/Button";
     import { createEventDispatcher } from "svelte";
     let current_page = 1;
     let from = 1;

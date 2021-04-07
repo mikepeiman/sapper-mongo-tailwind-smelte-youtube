@@ -6,10 +6,8 @@
      */
 
     import { onMount } from "svelte";
-    import "smelte/src/tailwind.css";
-    import Button from "smelte/src/components/Button";
-    import Chip from "smelte/src/components/Chip";
-    import TextField from "smelte/src/components/TextField";
+    // import "smelte/src/tailwind.css";
+    import Button from "../components/smelte/Button";
     import ChannelDetails from "../components/ChannelDetails.svelte";
     import Video from "../components/Video.svelte";
 

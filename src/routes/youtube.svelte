@@ -7,7 +7,7 @@
 
     import { onMount } from "svelte";
     // import "smelte/src/tailwind.css";
-    import Button from "../components/Button.svelte";
+    import Button from "../components/smelte/Button";
     import ChannelDetails from "../components/ChannelDetails.svelte";
     import Video from "../components/Video.svelte";
 
@@ -270,7 +270,7 @@
     <h3 class="center">YouTube OAuth Flow</h3>
     <div class="auth-widget absolute top-10 right-20">
         {#if isAuthorized}
-            <Button color="secondary" on:click={() => revokeAccess()}
+            <Button color="cyan" on:click={() => revokeAccess()}
                 >Revoke Access</Button
             >
             <p>You are signed in and authorized.</p>
