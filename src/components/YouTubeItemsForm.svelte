@@ -11,8 +11,7 @@
     let channelDescription, channelDetails, channelThumbnails, videoDetails;
     import Button from "./smelte/Button";
     import TextField from "./smelte/TextField";
-    import Label from "./smelte/TextField/Label.svelte";
-    // import { get } from '../scripts/_db.js'
+    import { onMount } from "svelte";
     import {
         storeCurrentDisplayContext,
         storePlaylistsList,
@@ -21,10 +20,61 @@
         storeChannelId,
         storeUploadsId,
         storeVideoDetails,
+        storeVideoId,
         storeVideosList,
-        storePlaylistName,
+        storePlaylistId,
         storeVideoComments,
     } from "../scripts/stores.js";
+    onMount(() => {
+        handle({e: {event: "null"}})
+        console.log(
+        `🚀 ~ file: YouTubeItemsForm.svelte ~ line 30 ~ onMount ~ channelName, channelId, uploadsId, playlistId, videoId`,
+        channelName,
+        channelId,
+        uploadsId,
+        playlistId,
+        videoId
+    );
+
+    });
+
+    $: controlItems = [
+        {
+            varName: channelName,
+            id: "channelName",
+            fullName: "Channel Name",
+            buttonText: "Search",
+            function: () => searchByChannelName(),
+        },
+        {
+            varName: channelId,
+            id: "channelId",
+            fullName: "Channel ID",
+            buttonText: "Get Playlists",
+            function: () => getPlaylistsByChannelId(),
+        },
+        {
+            varName: uploadsId,
+            id: "uploadsId",
+            fullName: "Uploads ID",
+            buttonText: "Get Uploads",
+            function: () => getVideosByPlaylistId("uploads"),
+        },
+        {
+            varName: playlistId,
+            id: "playlistId",
+            fullName: "Playlist ID",
+            buttonText: "Get Videos",
+            function: () => getVideosByPlaylistId("playlist"),
+        },
+        {
+            varName: videoId,
+            id: "videoId",
+            fullName: "Video ID",
+            buttonText: "Video Details",
+            function: () => getVideoFromId(),
+        },
+    ];
 
     function handle(e) {
         console.log(
@@ -44,7 +94,7 @@
             }
         }
     }
-    function getPlaylistsByChannelId(channelId) {
+    function getPlaylistsByChannelId() {
         playlistsList = [];
         return gapi.client.youtube.playlists
             .list({
@@ -102,7 +152,10 @@
         }
     }
 
-    function getVideosByPlaylistId(id) {
+    function getVideosByPlaylistId(listType) {
+        let id
+        if(listType == "playlist"){id = playlistId}
+        if(listType == "uploads"){id = uploadsId}
         videosList = [];
         let items, res;
         return gapi.client.youtube.playlistItems
@@ -136,7 +189,7 @@
             );
     }
 
-    function searchByChannelName() {
+    function searchByChannelName(channelName) {
         console.log(
             `🚀🔎🔎🔎 ~ file: YouTubeItemsForm.svelte ~ line 141 ~ searchByChannelName ~ channelName`,
             channelName
@@ -176,16 +229,16 @@
             );
     }
 
-    function getVideoFromId(id) {
+    function getVideoFromId() {
         console.log(
             `🚀✨✨🔎 ~ file: YouTubeItemsForm.svelte ~ line 161 ~ getVideoFromId ~ id`,
-            id
+            videoId
         );
         videoDetails = {};
         return gapi.client.youtube.videos
             .list({
                 part: ["snippet,contentDetails,statistics"],
-                id: id,
+                id: videoId,
                 maxResults: 50,
             })
             .then(
@@ -204,7 +257,7 @@
                     videoDetails = items;
                     storeVideoDetails.set(videoDetails);
                     console.log("items videoDetails: ", items);
-                    getCommentsFromVideoId(id);
+                    getCommentsFromVideoId(videoId);
                 },
                 function (err) {
                     console.error("Execute error", err);
@@ -300,11 +353,11 @@
     }
 </script>
 
-<div class="grid grid-cols-7 gap-4">
-    <div class="grid grid-cols-4 col-start-2">
-        <div class="col-span-3">
+<div class="gridContainer">
+    <!-- <div class="gridFieldContainer col-start-2">
+        <div class="col-span-7">
             <TextField
-            autocomplete
+                autocomplete
                 bind:value={channelName}
                 on:keypress={(e) => handle(e)}
                 id="channelName"
@@ -313,7 +366,7 @@
             />
         </div>
         <Button
-            class="yt-button h-14 self-start mt-2 col-start-4"
+            class="col-start-8 col-span-3 yt-button h-14 self-start mt-2"
             on:click={() => searchByChannelName()}>Search</Button
         >
     </div>
@@ -344,13 +397,14 @@
             />
         </div>
         <Button
-            class="yt-button h-14 self-start mt-2 col-start-4" 
+            inputControl
+            class="yt-button h-14 self-start mt-2 col-start-4"
             on:click={() => getVideosByPlaylistId(uploadsId)}>Get Videos</Button
         >
     </div>
     <div class="grid grid-cols-4 col-start-5">
         <div class="col-span-3">
-            <TextField 
+            <TextField
                 remove="px-4 pl-4 pt-4"
                 add="pl-1"
                 labelRemove="pl-4 pt-4 px-4"
@@ -365,6 +419,8 @@
             Playlist: {$storePlaylistName}
         </div>
         <Button
+            remove="pl-4 px-4"
+            add="pl-2 text-left"
             class="yt-button h-14 self-start mt-2 col-start-4"
             on:click={() => getVideosByPlaylistId(playlistId)}
             >Get Videos</Button
@@ -384,11 +440,38 @@
             class="yt-button h-14 self-start mt-2 col-start-4"
             on:click={() => getVideoFromId(videoId)}>Video Details</Button
         >
-    </div>
+    </div> -->
+    {#each controlItems as item, i}
+        <div class="grid grid-cols-10 col-start-{i + 2}">
+            <div class="col-span-7">
+                <TextField
+                    bind:value={item.varName}
+                    on:keypress={(e) => handle(e)}
+                    id={item.id}
+                    label={item.fullName}
+                    append="search"
+                />
+            </div>
+            <Button
+                inputControl
+                class="yt-button h-14 self-start mt-2 col-start-8 col-span-3"
+                on:click={item.function}>{item.buttonText}</Button
+            >
+        </div>
+    {/each}
 </div>
 
 <style>
     .yt-button {
         min-height: 3.5rem;
+    }
+    .gridContainer {
+        display: grid;
+        grid-template-columns: 5rem repeat(5, 1fr) 5rem;
+        grid-gap: 0.5rem;
+    }
+    .gridFieldContainer {
+        display: grid;
+        grid-template-columns: repeat(10, minmax(0, 1fr));
     }
 </style>

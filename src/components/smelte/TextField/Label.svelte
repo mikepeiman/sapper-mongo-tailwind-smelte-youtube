@@ -32,7 +32,7 @@
   const l = new ClassBuilder(labelClasses, labelDefault);
 
   let lClasses = i => i;
-  $: console.log(`Label component labelClasses ${labelClasses} $$props `, $$props)
+
   $: lClasses = l
       .flush()
       .add(txt(), focused && !error)

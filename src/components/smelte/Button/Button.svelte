@@ -20,6 +20,7 @@
   export let href = null;
   export let fab = false;
   export let type = "button";
+  export let inputControl = false
 
   export let remove = "";
   export let add = "";
@@ -35,11 +36,13 @@
   const smallDefault = 'pt-1 pb-1 pl-2 pr-2 text-xs';
   const disabledDefault = 'bg-gray-300 text-gray-500 dark:bg-dark-400 pointer-events-none hover:bg-gray-300 cursor-default';
   const elevationDefault = 'hover:shadow shadow';
+  const inputControlDefault = 'px-2 text-sm rounded-none bg-indigo-500 text-xs'
 
   export let classes = classesDefault;
   export let basicClasses = basicDefault;
   export let outlinedClasses = outlinedDefault;
   export let textClasses = textDefault;
+  export let inputControlClasses = inputControlDefault
   export let iconClasses = iconDefault;
   export let fabClasses = fabDefault;
   export let smallClasses = smallDefault;
@@ -98,6 +101,8 @@
       .add("button", !icon)
       .add(fabClasses, fab, fabDefault)
       .add(`hover:${bg("transLight")}`, fab)
+      .remove("px-4 rounded bg-indigo-500 text-sm", inputControl)
+      .add(inputControlDefault, inputControl)
       .add($$props.class)
       .remove(remove)
       .replace(replace)

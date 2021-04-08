@@ -13,6 +13,10 @@ module.exports = {
           500: '#dd33dd'
         },
       },
+      // fontFamily: {
+      //   'title': ['Montserrat', 'sans-serif'],
+      //   'body': ['Lato', 'sans-serif']
+      // },
     },
   },
   variants: {
