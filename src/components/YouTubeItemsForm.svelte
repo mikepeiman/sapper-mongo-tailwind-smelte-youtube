@@ -1,5 +1,9 @@
 <script>
-    export let channelName, channelId, uploadsId, playlistId, videoId;
+    export let channelName 
+    export let channelId = controlItems["channelId"]["varName"];
+    export let uploadsId = controlItems["uploadsId"]["varName"];
+    export let playlistId = controlItems["playlistId"]["varName"];
+    export let videoId = controlItems["videoId"]["varName"];
     let playlists,
         playlistsList,
         maxResults = 50;
@@ -29,7 +33,7 @@
         storeVideoComments,
     } from "../scripts/stores.js";
 
-    $: channelName;
+    $: channelName 
     $: channelId;
     $: uploadsId;
     $: playlistId;
@@ -48,54 +52,17 @@
     });
 
     function loadDataFromLS() {
-        channelName = lsget("channelName");
+        controlItems["channelName"]["varName"] = channelName = lsget("channelName");
+        controlItems["channelId"]["varName"] = channelId = lsget("channelId");
+        controlItems["uploadsId"]["varName"] = uploadsId = lsget("uploadsId");
+        controlItems["playlistId"]["varName"] = playlistId = lsget("playlistId");
+        controlItems["videoId"]["varName"] = videoId = lsget("videoId");
         channelDetails = lsget("channelDetails");
         videoDetails = lsget("videoDetails");
         videosList = lsget("videosList");
         playlistsList = lsget("playlistsList");
-        channelId = lsget("channelId");
-        uploadsId = lsget("uploadsId");
-        playlistId = lsget("playlistId");
-        videoId = lsget("videoId");
-    }
 
-    // $: controlItems = [
-    //     {
-    //         varName: channelName,
-    //         id: "channelName",
-    //         fullName: "Channel Name",
-    //         buttonText: "Search",
-    //         function: () => searchByChannelName(),
-    //     },
-    //     {
-    //         varName: channelId,
-    //         id: "channelId",
-    //         fullName: "Channel ID",
-    //         buttonText: "Get Playlists",
-    //         function: () => getPlaylistsByChannelId(),
-    //     },
-    //     {
-    //         varName: uploadsId,
-    //         id: "uploadsId",
-    //         fullName: "Uploads ID",
-    //         buttonText: "Get Uploads",
-    //         function: () => getVideosByPlaylistId("uploads"),
-    //     },
-    //     {
-    //         varName: playlistId,
-    //         id: "playlistId",
-    //         fullName: "Playlist ID",
-    //         buttonText: "Get Videos",
-    //         function: () => getVideosByPlaylistId("playlist"),
-    //     },
-    //     {
-    //         varName: videoId,
-    //         id: "videoId",
-    //         fullName: "Video ID",
-    //         buttonText: "Video Details",
-    //         function: () => getVideoFromId(),
-    //     },
-    // ];
+    }
 
     $: controlItems = {
         channelName: {
@@ -135,17 +102,19 @@
         },
     };
 
+
+
     function handle(e) {
         if (e.keyCode == 13) {
             e.preventDefault();
             if (e.target.id == "Channel Name") {
-                searchByChannelName(channelName);
+                searchByChannelName();
             } else if (e.target.id == "Channel ID") {
-                getPlaylistsByChannelId(channelId);
+                getPlaylistsByChannelId();
             } else if (e.target.id == "Uploads ID") {
-                getVideosByPlaylistId(uploadsId);
+                getVideosByPlaylistId();
             } else if (e.target.id == "Playlist ID") {
-                getVideosByPlaylistId(playlistId);
+                getVideosByPlaylistId();
             }
         }
     }
@@ -248,7 +217,7 @@
             );
     }
 
-    function searchByChannelName(channelName) {
+    function searchByChannelName() {
         console.log(
             `🚀🔎🔎🔎 ~ file: YouTubeItemsForm.svelte ~ line 141 ~ searchByChannelName ~ channelName`,
             channelName
@@ -413,6 +382,12 @@
 </script>
 
 <div class="gridContainer">
+<p>channelName {channelName}</p>
+<p>channelId {channelId}</p>
+<p>uploadsId {uploadsId}</p>
+<p>playlistId {playlistId}</p>
+<p>videoId {videoId}</p>
+
     {#each Object.keys(controlItems) as item, i}
         <div class="grid grid-cols-10 col-start-{i + 2}">
             <div class="col-span-7">
