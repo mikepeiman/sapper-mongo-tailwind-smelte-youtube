@@ -14,6 +14,7 @@
     import Button from "./smelte/Button";
     import TextField from "./smelte/TextField";
     import { onMount } from "svelte";
+    import lsget from "../scripts/_lsget.js";
     import {
         storeCurrentDisplayContext,
         storePlaylistsList,
@@ -27,6 +28,13 @@
         storePlaylistId,
         storeVideoComments,
     } from "../scripts/stores.js";
+
+    $: channelName;
+    $: channelId;
+    $: uploadsId;
+    $: playlistId;
+    $: videoId;
+
     onMount(() => {
         loadDataFromLS();
         console.log(
@@ -38,6 +46,7 @@
             videoId
         );
     });
+
     function loadDataFromLS() {
         channelName = lsget("channelName");
         channelDetails = lsget("channelDetails");
@@ -49,57 +58,84 @@
         playlistId = lsget("playlistId");
         videoId = lsget("videoId");
     }
-    function lsget(item) {
-        let ls = localStorage.getItem(item);
-        if (ls) {
-            return JSON.parse(ls);
-        } else {
-            return "not found in ls";
-        }
-    }
-    $: controlItems = [
-        {
+
+    // $: controlItems = [
+    //     {
+    //         varName: channelName,
+    //         id: "channelName",
+    //         fullName: "Channel Name",
+    //         buttonText: "Search",
+    //         function: () => searchByChannelName(),
+    //     },
+    //     {
+    //         varName: channelId,
+    //         id: "channelId",
+    //         fullName: "Channel ID",
+    //         buttonText: "Get Playlists",
+    //         function: () => getPlaylistsByChannelId(),
+    //     },
+    //     {
+    //         varName: uploadsId,
+    //         id: "uploadsId",
+    //         fullName: "Uploads ID",
+    //         buttonText: "Get Uploads",
+    //         function: () => getVideosByPlaylistId("uploads"),
+    //     },
+    //     {
+    //         varName: playlistId,
+    //         id: "playlistId",
+    //         fullName: "Playlist ID",
+    //         buttonText: "Get Videos",
+    //         function: () => getVideosByPlaylistId("playlist"),
+    //     },
+    //     {
+    //         varName: videoId,
+    //         id: "videoId",
+    //         fullName: "Video ID",
+    //         buttonText: "Video Details",
+    //         function: () => getVideoFromId(),
+    //     },
+    // ];
+
+    $: controlItems = {
+        channelName: {
             varName: channelName,
             id: "channelName",
             fullName: "Channel Name",
             buttonText: "Search",
             function: () => searchByChannelName(),
         },
-        {
+        channelId: {
             varName: channelId,
             id: "channelId",
             fullName: "Channel ID",
             buttonText: "Get Playlists",
             function: () => getPlaylistsByChannelId(),
         },
-        {
+        uploadsId: {
             varName: uploadsId,
             id: "uploadsId",
             fullName: "Uploads ID",
             buttonText: "Get Uploads",
             function: () => getVideosByPlaylistId("uploads"),
         },
-        {
+        playlistId: {
             varName: playlistId,
             id: "playlistId",
             fullName: "Playlist ID",
             buttonText: "Get Videos",
             function: () => getVideosByPlaylistId("playlist"),
         },
-        {
+        videoId: {
             varName: videoId,
             id: "videoId",
             fullName: "Video ID",
             buttonText: "Video Details",
             function: () => getVideoFromId(),
         },
-    ];
+    };
 
     function handle(e) {
-        console.log(
-            `🚀 ~ file: YouTubeItemsForm.svelte ~ line 29 ~ handle ~ e.keyCode`,
-            e.keyCode
-        );
         if (e.keyCode == 13) {
             e.preventDefault();
             if (e.target.id == "Channel Name") {
@@ -377,21 +413,22 @@
 </script>
 
 <div class="gridContainer">
-    {#each controlItems as item, i}
+    {#each Object.keys(controlItems) as item, i}
         <div class="grid grid-cols-10 col-start-{i + 2}">
             <div class="col-span-7">
                 <TextField
-                    bind:value={item.varName}
+                    bind:value={controlItems[item].varName}
                     on:keypress={(e) => handle(e)}
-                    id={item.id}
-                    label={item.fullName}
+                    id={controlItems[item].id}
+                    label={controlItems[item].fullName}
                     append="search"
                 />
             </div>
             <Button
                 inputControl
                 class="yt-button h-14 self-start mt-2 col-start-8 col-span-3"
-                on:click={item.function}>{item.buttonText}</Button
+                on:click={controlItems[item].function}
+                >{controlItems[item].buttonText}</Button
             >
         </div>
     {/each}

@@ -1,6 +1,6 @@
 <script>
 export let id
-
+import { stores } from 'svelte'
 
 </script> 
 
