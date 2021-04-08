@@ -80,73 +80,36 @@
     });
 
     storeVideosList.subscribe((val) => {
-        console.log(
-            `🚀 ~ file: YouTube_OAuth.svelte ~ storeVideosList ~ onMount ~ val`,
-            val
-        );
         videosList = val;
     });
     storeChannelName.subscribe((val) => {
-        console.log(
-            `🚀 ~ file: YouTube_OAuth.svelte ~ storeChannelName ~ onMount ~ val`,
-            val
-        );
         channelName = val;
     });
     storeChannelDetails.subscribe((val) => {
-        console.log(
-            `🚀 ~ file: YouTube_OAuth.svelte ~ storeChannelDetails ~ onMount ~ val`,
-            val
-        );
         channelDetails = val;
     });
     storeCurrentDisplayContext.subscribe((val) => {
-        console.log(
-            `🚀 ~ file: YouTube_OAuth.svelte ~ storeCurrentDisplayContext ~ onMount ~ val`,
-            val
-        );
         currentDisplayContext = val;
     });
     storeVideoDetails.subscribe((val) => {
-        console.log(
-            `🚀 ~ file: YouTube_OAuth.svelte ~ storeVideoDetails ~ onMount ~ val`,
-            val
-        );
         videoDetails = val;
     });
     storePlaylistsList.subscribe((val) => {
-        console.log(
-            `🚀 ~ file: YouTube_OAuth.svelte ~ storePlaylistsList ~ onMount ~ val`,
-            val
-        );
         playlistsList = val;
     });
     storeVideosList.subscribe((val) => {
-        console.log(
-            `🚀📽📽📽 ~ file: YouTube_OAuth.svelte ~ storeVideosList ~ onMount ~ val`,
-            val
-        );
         videosList = val;
     });
     storeVideoId.subscribe((val) => {
-        console.log(
-            `🚀📽📽📽 ~ file: YouTube_OAuth.svelte ~ storeVideosList ~ onMount ~ val`,
-            val
-        );
         videoId = val;
     });
     storePlaylistId.subscribe((val) => {
-        console.log(
-            `🚀 ~ file: YouTube_OAuth.svelte ~ storePlaylistId ~ onMount ~ val`,
-            val
-        );
         playlistId = val;
     });
 
     function lsget(item) {
         let ls = localStorage.getItem(item);
         if (ls) {
-            // console.log(`💎⛏ item ls ${ls}`);
             return JSON.parse(ls);
         } else {
             return "not found in ls";

@@ -32,7 +32,27 @@
     }
 </script>
 
-<Button class="pagination back" on:click={() => page("back")}>BACK</Button>
-<Button class="pagination forward" on:click={() => page("forward")}
-    >FORWARD</Button
->
+<div class="flex">
+    <Button
+        color="blue"
+        dark
+        remove="shadow"
+        class="pagination back mx-1"
+        on:click={() => page("back")}
+        ><span class="material-icons"> arrow_back </span></Button
+    >
+    <Button
+        color="blue"
+        dark
+        remove="shadow"
+        class="pagination forward mx-1"
+        on:click={() => page("forward")}
+        ><span class="material-icons"> arrow_forward </span></Button
+    >
+</div>
+
+<style>
+    .pagination {
+        margin: 1rem;
+    }
+</style>

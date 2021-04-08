@@ -5,7 +5,9 @@
         maxResults = 50;
     let pageInfo = {};
     let pagesOfResults = 0;
-    let nextPageToken = "";
+    let nextPageTokenComments = "";
+    let nextPageTokenPlaylistList = "";
+    let nextPageTokenPlaylistVideos = "";
     let videosList = [];
     let items, res;
     let channelDescription, channelDetails, channelThumbnails, videoDetails;
@@ -26,18 +28,35 @@
         storeVideoComments,
     } from "../scripts/stores.js";
     onMount(() => {
-        handle({e: {event: "null"}})
+        loadDataFromLS();
         console.log(
-        `🚀 ~ file: YouTubeItemsForm.svelte ~ line 30 ~ onMount ~ channelName, channelId, uploadsId, playlistId, videoId`,
-        channelName,
-        channelId,
-        uploadsId,
-        playlistId,
-        videoId
-    );
-
+            `🚀 ~ file: YouTubeItemsForm.svelte ~ line 30 ~ onMount ~ channelName, channelId, uploadsId, playlistId, videoId`,
+            channelName,
+            channelId,
+            uploadsId,
+            playlistId,
+            videoId
+        );
     });
-
+    function loadDataFromLS() {
+        channelName = lsget("channelName");
+        channelDetails = lsget("channelDetails");
+        videoDetails = lsget("videoDetails");
+        videosList = lsget("videosList");
+        playlistsList = lsget("playlistsList");
+        channelId = lsget("channelId");
+        uploadsId = lsget("uploadsId");
+        playlistId = lsget("playlistId");
+        videoId = lsget("videoId");
+    }
+    function lsget(item) {
+        let ls = localStorage.getItem(item);
+        if (ls) {
+            return JSON.parse(ls);
+        } else {
+            return "not found in ls";
+        }
+    }
     $: controlItems = [
         {
             varName: channelName,
@@ -153,9 +172,13 @@
     }
 
     function getVideosByPlaylistId(listType) {
-        let id
-        if(listType == "playlist"){id = playlistId}
-        if(listType == "uploads"){id = uploadsId}
+        let id;
+        if (listType == "playlist") {
+            id = playlistId;
+        }
+        if (listType == "uploads") {
+            id = uploadsId;
+        }
         videosList = [];
         let items, res;
         return gapi.client.youtube.playlistItems
@@ -267,8 +290,8 @@
 
     function getCommentsFromVideoId(id) {
         console.log(
-            `🚀 ~ file: YouTubeItemsForm.svelte ~ line 225 ~ getCommentsFromVideoId ~ nextPageToken`,
-            nextPageToken
+            `🚀 ~ file: YouTubeItemsForm.svelte ~ line 225 ~ getCommentsFromVideoId ~ nextPageTokenComments`,
+            nextPageTokenComments
         );
         console.log(
             `🚀 ~ file: YouTubeItemsForm.svelte ~ line 205 ~ getCommentsFromVideoId ~ id`,
@@ -280,8 +303,8 @@
             .list({
                 part: ["id,snippet,replies"],
                 videoId: id,
-                maxResults: 1000,
-                pageToken: nextPageToken,
+                maxResults: 100,
+                pageToken: nextPageTokenComments,
             })
             .then(
                 function (response) {
@@ -290,7 +313,7 @@
                         "🦜🦜🦜getCommentsFromVideoId Response",
                         response
                     );
-                    nextPageToken = response.result.nextPageToken;
+                    nextPageTokenComments = response.result.nextPageToken;
 
                     comments = response.result.items;
                     storeVideoComments.set(comments);
@@ -310,7 +333,7 @@
         if (type == "Channel Details") {
             console.log(`Name res: `, res);
             channelId = res.id;
-            nextPageToken = res.nextPageToken;
+            // nextPageToken = res.nextPageToken;
             if (res.snippet) {
                 channelDescription = res.snippet.description;
                 let thumbs = res.snippet.thumbnails;
@@ -331,7 +354,7 @@
                 pagesOfResults = Math.ceil(
                     res.pageInfo.totalResults / res.pageInfo.resultsPerPage
                 );
-                nextPageToken = res.nextPageToken;
+                nextPageTokenPlaylistList = res.nextPageToken;
             });
             console.log(`ID res: `, res);
             if (res.kind == "youtube#playlistListResponse") {
