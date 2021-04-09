@@ -30,7 +30,7 @@
         storeVideoId,
         storeVideosList,
         storePlaylistId,
-        storeVideoComments,
+        storeComments,
     } from "../scripts/stores.js";
 
     $: channelName = controlItems["channelName"]["varName"];
@@ -212,11 +212,6 @@
     }
 
     function searchByChannelName() {
-        console.log(
-            `🚀🔎🔎🔎 ~ file: YouTubeItemsForm.svelte ~ line 141 ~ searchByChannelName ~ channelName`,
-            channelName
-        );
-
         videosList = [];
         return gapi.client.youtube.channels
             .list({
@@ -329,7 +324,7 @@
                     nextPageTokenComments = response.result.nextPageToken;
 
                     comments = response.result.items;
-                    storeVideoComments.set(comments);
+                    storeComments.set(comments);
                 },
                 function (err) {
                     console.error("Execute error", err);

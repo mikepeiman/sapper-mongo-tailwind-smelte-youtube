@@ -23,6 +23,7 @@
         storeUploadsId,
         storePlaylistId,
         storeVideoId,
+        storeComments
     } from "../scripts/stores.js";
     import { API_KEY } from "../scripts/secret_keys.js";
     import { CLIENT_ID } from "../scripts/secret_keys.js";
@@ -38,10 +39,9 @@
     let channelName = "";
     let currentDisplayContext = "default";
     // Options: "Channel Details", "Collection", "Playlist", "Video Details"
-    let channelId = "";
-    let videoId = "";
+    let channelId, videoId, comments, videoDetails
     let channelDetails = {};
-    let videoDetails = $storeVideoDetails;
+    // let videoDetails = $storeVideoDetails;
     let channelDescription = "";
     let channelThumbnails = {};
     let nextPageToken = "";
@@ -103,6 +103,7 @@
         $storeUploadsId = uploadsId = lsget("uploadsId");
         $storePlaylistId = playlistId = lsget("playlistId");
         $storeVideoId = videoId = lsget("videoId");
+        $storeComments = comments = lsget("comments");
     }
 
     function loadGapi() {

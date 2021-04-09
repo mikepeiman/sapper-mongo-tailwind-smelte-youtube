@@ -13,7 +13,7 @@ let videoId = writable("")
 let uploadsId = writable("")
 let playlistId = writable("")
 let playlistName = writable("")
-let videoComments = writable([])
+let comments = writable([])
 
 export const storeVideosList = {
     subscribe: videosList.subscribe,
@@ -105,10 +105,10 @@ export const storeVideoId = {
 }
 
 
-export const storeVideoComments = {
-    subscribe: videoComments.subscribe,
+export const storeComments = {
+    subscribe: comments.subscribe,
     set: val => {
-        localStorage.setItem("videoComments", JSON.stringify(val))
-        videoComments.set(val)
+        localStorage.setItem("comments", JSON.stringify(val))
+        comments.set(val)
     }
 }
