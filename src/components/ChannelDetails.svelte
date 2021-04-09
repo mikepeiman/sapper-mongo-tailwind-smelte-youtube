@@ -1,7 +1,7 @@
 <script>
     export let channelDetails;
 </script>
-
+{#if Object.entries(channelDetails).length > 0}
 <div class="flex flex-wrap justify-start justify-items-start">
     <div
         class="playlistItem grid row-start-auto grid-cols-12 m-1"
@@ -28,3 +28,6 @@
         </div>
     </div>
 </div>
+{:else}
+<h1>No data found</h1>
+{/if}

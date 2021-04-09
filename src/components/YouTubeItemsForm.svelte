@@ -1,5 +1,5 @@
 <script>
-    export let channelName 
+    export let channelName;
     export let channelId = controlItems["channelId"]["varName"];
     export let uploadsId = controlItems["uploadsId"]["varName"];
     export let playlistId = controlItems["playlistId"]["varName"];
@@ -33,11 +33,11 @@
         storeVideoComments,
     } from "../scripts/stores.js";
 
-    $: channelName 
-    $: channelId;
-    $: uploadsId;
-    $: playlistId;
-    $: videoId;
+    $: channelName = controlItems["channelName"]["varName"];
+    $: channelId = controlItems["channelId"]["varName"];
+    $: uploadsId = controlItems["uploadsId"]["varName"];
+    $: playlistId = controlItems["playlistId"]["varName"];
+    $: videoId = controlItems["videoId"]["varName"];
 
     onMount(() => {
         loadDataFromLS();
@@ -52,19 +52,22 @@
     });
 
     function loadDataFromLS() {
-        controlItems["channelName"]["varName"] = channelName = lsget("channelName");
-        controlItems["channelId"]["varName"] = channelId = lsget("channelId");
-        controlItems["uploadsId"]["varName"] = uploadsId = lsget("uploadsId");
-        controlItems["playlistId"]["varName"] = playlistId = lsget("playlistId");
-        controlItems["videoId"]["varName"] = videoId = lsget("videoId");
+        channelName = controlItems["channelName"]["varName"] = lsget(
+            "channelName"
+        );
+        channelId = controlItems["channelId"]["varName"] = lsget("channelId");
+        uploadsId = controlItems["uploadsId"]["varName"] = lsget("uploadsId");
+        playlistId = controlItems["playlistId"]["varName"] = lsget(
+            "playlistId"
+        );
+        videoId = controlItems["videoId"]["varName"] = lsget("videoId");
         channelDetails = lsget("channelDetails");
         videoDetails = lsget("videoDetails");
         videosList = lsget("videosList");
         playlistsList = lsget("playlistsList");
-
     }
 
-    $: controlItems = {
+    let controlItems = {
         channelName: {
             varName: channelName,
             id: "channelName",
@@ -102,19 +105,24 @@
         },
     };
 
-
-
     function handle(e) {
         if (e.keyCode == 13) {
+            console.log(`🔎🔎🔎keypress enter`, e.target);
             e.preventDefault();
-            if (e.target.id == "Channel Name") {
+            if (e.target.id == "channelName") {
                 searchByChannelName();
-            } else if (e.target.id == "Channel ID") {
+            }
+            if (e.target.id == "channelId") {
                 getPlaylistsByChannelId();
-            } else if (e.target.id == "Uploads ID") {
+            }
+            if (e.target.id == "uploadsId") {
                 getVideosByPlaylistId();
-            } else if (e.target.id == "Playlist ID") {
+            }
+            if (e.target.id == "playlistId") {
                 getVideosByPlaylistId();
+            }
+            if (e.target.id == "videoId") {
+                getVideoFromId();
             }
         }
     }
@@ -236,7 +244,8 @@
                     console.log("Response", response);
                     console.log("Result: ", response.result);
                     let res = response.result;
-                    if (res.items) {
+                    let totalItems = res.pageInfo.totalResults
+                    if (totalItems > 0) {
                         setDisplayContext(res);
                         items = res.items[0];
                         parseResultData($storeCurrentDisplayContext, items);
@@ -382,11 +391,11 @@
 </script>
 
 <div class="gridContainer">
-<p>channelName {channelName}</p>
-<p>channelId {channelId}</p>
-<p>uploadsId {uploadsId}</p>
-<p>playlistId {playlistId}</p>
-<p>videoId {videoId}</p>
+    <p>channelName {channelName}</p>
+    <p>channelId {channelId}</p>
+    <p>uploadsId {uploadsId}</p>
+    <p>playlistId {playlistId}</p>
+    <p>videoId {videoId}</p>
 
     {#each Object.keys(controlItems) as item, i}
         <div class="grid grid-cols-10 col-start-{i + 2}">

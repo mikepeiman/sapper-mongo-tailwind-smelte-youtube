@@ -10,6 +10,7 @@
     import Button from "../components/smelte/Button";
     import ChannelDetails from "../components/ChannelDetails.svelte";
     import Video from "../components/Video.svelte";
+    import lsget from '../scripts/_lsget.js'
 
     import {
         storeVideosList,
@@ -107,14 +108,6 @@
         playlistId = val;
     });
 
-    function lsget(item) {
-        let ls = localStorage.getItem(item);
-        if (ls) {
-            return JSON.parse(ls);
-        } else {
-            return "not found in ls";
-        }
-    }
 
     function loadDataFromLS() {
         channelName = lsget("channelName");
