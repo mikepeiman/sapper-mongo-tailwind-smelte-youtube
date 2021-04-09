@@ -46,13 +46,9 @@
     let channelThumbnails = {};
     let nextPageToken = "";
     let pageInfo = {};
-    // $: playlistsList = lsget("playlistsList")
     let playlistsList;
     let videosList = [];
     let maxResults = 50;
-    let videosListData = [];
-    // let lookupPart = "snippet";
-    let lookupPart = "contentDetails";
     let uploadsId = "";
     let playlistId = "";
     let pagesOfResults = 0;
@@ -61,21 +57,8 @@
     onMount(() => {
         // console.log(`tailwind colors: `, colors)
         if (gapiLoaded) {
-            console.log(
-                `🚀 ~ file: YouTube_OAuth.svelte ~ line 72 ~ onMount ~ gapiLoaded`,
-                gapiLoaded
-            );
-            console.log(`GAPI loaded`);
-            // authenticate().then(loadClient)
-            // gapi.load("client:auth2", function () {
-            //     gapi.auth2.init({ client_id: CLIENT_ID });
-            // });
             handleClientLoad();
         }
-        console.log(
-            `🚀 ~ file: YouTube_OAuth.svelte ~ line 72 ~ onMount ~ gapi🚩🚩NOT Loaded`,
-            gapiLoaded
-        );
         handleClientLoad();
         loadDataFromLS();
     });
@@ -110,16 +93,16 @@
 
 
     function loadDataFromLS() {
-        channelName = lsget("channelName");
-        channelDetails = lsget("channelDetails");
-        videoDetails = lsget("videoDetails");
-        videosList = lsget("videosList");
-        playlistsList = lsget("playlistsList");
-        currentDisplayContext = lsget("currentDisplayContext");
-        channelId = lsget("channelId");
-        uploadsId = lsget("uploadsId");
-        playlistId = lsget("playlistId");
-        videoId = lsget("videoId");
+        $storeChannelName = channelName = lsget("channelName");
+        $storeChannelDetails = channelDetails = lsget("channelDetails");
+        $storeVideoDetails = videoDetails = lsget("videoDetails");
+        $storeVideosList = videosList = lsget("videosList");
+        $storePlaylistsList = playlistsList = lsget("playlistsList");
+        $storeCurrentDisplayContext = currentDisplayContext = lsget("currentDisplayContext");
+        $storeChannelId = channelId = lsget("channelId");
+        $storeUploadsId = uploadsId = lsget("uploadsId");
+        $storePlaylistId = playlistId = lsget("playlistId");
+        $storeVideoId = videoId = lsget("videoId");
     }
 
     function loadGapi() {
@@ -222,8 +205,8 @@
         src="https://apis.google.com/js/api.js"
         on:load={handleClientLoad}></script>
 </svelte:head>
-<div class="flex justify-center">
-    <h3 class="center">YouTube OAuth Flow</h3>
+<div class="flex justify-center bg-cyan-100 p-3 m-0 mb-2 border-2">
+    <h3 class="center">YouTube Data API V3</h3>
     <div class="auth-widget absolute top-10 right-20">
         {#if isAuthorized}
             <Button color="cyan" on:click={() => revokeAccess()}
@@ -253,7 +236,7 @@
     </div>
 </div>
 
-<div class="results flex flex-wrap justify-start justify-items-start">
+<div class="bg-cyan-100 border-2 p-2 my-2 flex flex-wrap justify-start justify-items-start">
     {#if currentDisplayContext == "Channel Details"}
         <ChannelDetails {channelDetails} />
     {/if}

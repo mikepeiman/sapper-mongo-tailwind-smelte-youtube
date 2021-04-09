@@ -1,9 +1,9 @@
 <script>
     export let channelName;
-    export let channelId = controlItems["channelId"]["varName"];
-    export let uploadsId = controlItems["uploadsId"]["varName"];
-    export let playlistId = controlItems["playlistId"]["varName"];
-    export let videoId = controlItems["videoId"]["varName"];
+    export let channelId 
+    export let uploadsId 
+    export let playlistId 
+    export let videoId
     let playlists,
         playlistsList,
         maxResults = 50;
@@ -41,26 +41,14 @@
 
     onMount(() => {
         loadDataFromLS();
-        console.log(
-            `🚀 ~ file: YouTubeItemsForm.svelte ~ line 30 ~ onMount ~ channelName, channelId, uploadsId, playlistId, videoId`,
-            channelName,
-            channelId,
-            uploadsId,
-            playlistId,
-            videoId
-        );
     });
 
     function loadDataFromLS() {
-        channelName = controlItems["channelName"]["varName"] = lsget(
-            "channelName"
-        );
-        channelId = controlItems["channelId"]["varName"] = lsget("channelId");
-        uploadsId = controlItems["uploadsId"]["varName"] = lsget("uploadsId");
-        playlistId = controlItems["playlistId"]["varName"] = lsget(
-            "playlistId"
-        );
-        videoId = controlItems["videoId"]["varName"] = lsget("videoId");
+        controlItems["channelName"]["varName"] = lsget("channelName");
+        controlItems["channelId"]["varName"] = lsget("channelId");
+        controlItems["uploadsId"]["varName"] = lsget("uploadsId");
+        controlItems["playlistId"]["varName"] = lsget("playlistId");
+        controlItems["videoId"]["varName"] = lsget("videoId");
         channelDetails = lsget("channelDetails");
         videoDetails = lsget("videoDetails");
         videosList = lsget("videosList");
@@ -179,9 +167,7 @@
         }
         if (res.kind == "youtube#videoListResponse") {
             storeCurrentDisplayContext.set("Video Details");
-        } else {
-            console.log(`res.kind unknown: ${res.kind} full res: `, res);
-        }
+        } 
     }
 
     function getVideosByPlaylistId(listType) {
@@ -244,21 +230,33 @@
                     console.log("Response", response);
                     console.log("Result: ", response.result);
                     let res = response.result;
-                    let totalItems = res.pageInfo.totalResults
-                    if (totalItems > 0) {
-                        setDisplayContext(res);
+                    setDisplayContext(res);
+                    let totalResults = res.pageInfo.totalResults;
+                    if (totalResults == 1) {
                         items = res.items[0];
                         parseResultData($storeCurrentDisplayContext, items);
-                    } else {
+                    }
+                    if (totalResults > 1) {
+                        console.log(
+                            `🚀 ~ file: YouTubeItemsForm.svelte ~ line 246 ~ searchByChannelName ~ totalResults > 1 --- `,
+                            totalResults
+                        );
+                        items = res.items[0];
+                        parseResultData($storeCurrentDisplayContext, items);
+                    } 
+                    if (totalResults == 0){
                         items = [];
-                        uploadsId = "Channel not found";
+                        channelId = uploadsId = "Channel not found";
+                        
                     }
 
-                    channelDetails = items;
+    
                     console.log("items: ", items);
-                    storeChannelName.set(channelName);
-                    storeChannelDetails.set(channelDetails);
-                    storeChannelId.set(items.id);
+                    $storeChannelDetails = channelDetails = items;
+                    $storeChannelId = channelId = items.id;
+                    // storeChannelName.set(channelName);
+                    // storeChannelDetails.set(channelDetails);
+                    // storeChannelId.set(items.id);
                 },
                 function (err) {
                     console.error("Execute error", err);
@@ -286,7 +284,7 @@
                     res = response.result;
                     if (res.items) {
                         setDisplayContext(res);
-                        parseResultData(storeCurrentDisplayContext, res);
+                        parseResultData($storeCurrentDisplayContext, res);
                     } else {
                         id = "Playlist not found";
                     }
@@ -339,14 +337,10 @@
     }
 
     function parseResultData(type, res) {
-        console.log(
-            `🚀 ~ file: YouTubeItemsForm.svelte ~ line 190 ~ parseResultData ~ res`,
-            res
-        );
-        // let res
+        console.log(`parseResultData(type, res) res: `, type, res);
         if (type == "Channel Details") {
-            console.log(`Name res: `, res);
-            channelId = res.id;
+            console.log(`🚀 ~ file: YouTubeItemsForm.svelte ~ line 338 ~ parseResultData ~ type`, type)
+            $storeChannelId = channelId = res.id;
             // nextPageToken = res.nextPageToken;
             if (res.snippet) {
                 channelDescription = res.snippet.description;
@@ -391,12 +385,6 @@
 </script>
 
 <div class="gridContainer">
-    <p>channelName {channelName}</p>
-    <p>channelId {channelId}</p>
-    <p>uploadsId {uploadsId}</p>
-    <p>playlistId {playlistId}</p>
-    <p>videoId {videoId}</p>
-
     {#each Object.keys(controlItems) as item, i}
         <div class="grid grid-cols-10 col-start-{i + 2}">
             <div class="col-span-7">
