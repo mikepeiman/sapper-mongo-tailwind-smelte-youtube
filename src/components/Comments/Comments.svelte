@@ -9,6 +9,8 @@
             `🚀 ~ file: Comments.svelte ~ line 4 ~ storeComments`,
             $storeComments
         );
+            let y = orderByDateOrTime($storeComments[41].replies.comments)
+            console.log(`🚀 ~ file: Comments.svelte ~ line 13 ~ onMount ~ y`, y)
     });
 
     function getDate(date) {
@@ -17,6 +19,12 @@
     }
     function getTime(date) {
         let x = new Date(date).toLocaleTimeString()
+        return x
+    }
+
+    function orderByDateOrTime(arr) {
+        let x = arr.sort((a, b) => (getTime(a.snippet.publishedAt) > getTime(b.snippet.publishedAt)) ? 1 : -1)
+        console.log(`🚀 ~ file: Comments.svelte ~ line 26 ~ orderByDateOrTime ~ x`, x)
         return x
     }
 </script>
@@ -35,7 +43,7 @@
             <p class="col-start-3 col-span-12">
                 {comment.snippet.topLevelComment.snippet.textDisplay}
             </p>
-            {#each comment.replies.comments as reply}
+            {#each orderByDateOrTime(comment.replies.comments) as reply}
                 <p class="col-start-3 col-span-12 bg-cyan-100">
                     <span class="bg-cyan-300">{reply.snippet.authorDisplayName}</span>
                     <span class="bg-cyan-400">{getDate(reply.snippet.publishedAt)} - {getTime(reply.snippet.publishedAt)}</span>
