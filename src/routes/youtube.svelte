@@ -268,14 +268,6 @@
 </div>
 
 <style>
-    .results {
-        background: rgba(0, 55, 200, 0.1);
-        border: 2px solid rgba(0, 55, 200, 0.3);
-        border-radius: 5px;
-        padding: 2rem;
-        margin: 1rem;
-    }
-
     .videoItem {
         margin: 0.25rem;
         cursor: pointer;

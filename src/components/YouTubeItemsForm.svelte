@@ -254,6 +254,7 @@
                     console.log("items: ", items);
                     $storeChannelDetails = channelDetails = items;
                     $storeChannelId = channelId = items.id;
+                    $storeChannelName = channelName
                     // storeChannelName.set(channelName);
                     // storeChannelDetails.set(channelDetails);
                     // storeChannelId.set(items.id);
@@ -385,6 +386,12 @@
 </script>
 
 <div class="gridContainer">
+    <!-- <p>channelName {channelName}</p>
+    <p>channelId {channelId}</p>
+    <p>uploadsId {uploadsId}</p>
+    <p>playlistId {playlistId}</p>
+    <p>videoId {videoId}</p> -->
+
     {#each Object.keys(controlItems) as item, i}
         <div class="grid grid-cols-10 col-start-{i + 2}">
             <div class="col-span-7">

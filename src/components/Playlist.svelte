@@ -5,7 +5,7 @@
 </script>
 
 <div
-    class="playlistItem grid row-start-auto grid-cols-12 m-1"
+    class="grid row-start-auto grid-cols-12 m-1 bg-blue-200"
     on:click={() => {
         storePlaylistId.set(playlist.id);
         storePlaylistName.set(playlist.snippet.title)
