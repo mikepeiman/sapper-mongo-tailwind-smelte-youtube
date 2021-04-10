@@ -3,6 +3,8 @@
     import { storeComments } from "../../scripts/stores.js";
     import Treeview from "../smelte/Treeview";
     import { onMount } from "svelte";
+    import he from "he";
+    import { each } from "svelte/internal";
 
     onMount(() => {
         console.log(
@@ -11,6 +13,26 @@
         );
         let y = orderByDateOrTime($storeComments[41].replies.comments);
         console.log(`🚀 ~ file: Comments.svelte ~ line 13 ~ onMount ~ y`, y);
+        let text =
+            $storeComments[0].snippet.topLevelComment.snippet.textDisplay;
+        let decode = decodeHtml(text);
+        console.log(
+            `🚀 ~ file: Comments.svelte ~ line 18 ~ onMount ~ decode`,
+            decode
+        );
+        let broke = text.replace(/<br\s*\/?>/gim, "\\n");
+        console.log(
+            `🚀 ~ file: Comments.svelte ~ line 17 ~ onMount ~ broke`,
+            broke
+        );
+
+        let c = $storeComments;
+        c.forEach((comment, i) => {
+            parseHTML(
+                comment.snippet.topLevelComment.snippet.textDisplay,
+                i + "-" + comment.id
+            );
+        });
     });
 
     function getDate(date) {
@@ -34,6 +56,27 @@
         );
         return x;
     }
+
+    function decodeHtml(html) {
+        var txt = document.createElement("textarea");
+        txt.innerHTML = html.replace(/<br\s*\/?>/gim, "\\n"); // he.decode(html, {useNamedReferences: true });
+        return txt.value;
+    }
+
+    function parseHTML(html, id) {
+        console.log(
+            `🚀 ~ file: Comments.svelte ~ line 59 ~ parseHTML ~ html, id`,
+            html,
+            id
+        );
+        var p = document.createElement("p");
+        p.className = "bg-green-200"
+        p.innerHTML = html;
+        let el = document.getElementById(id);
+        if (el) {
+            el.appendChild(p);
+        }
+    }
 </script>
 
 <h4>Comments component {id}</h4>
@@ -56,7 +99,7 @@
                 </p>
             </div>
             <p class="col-start-3 col-span-12">
-                {(comment.snippet.topLevelComment.snippet.textDisplay)}
+                {he.decode(comment.snippet.topLevelComment.snippet.textDisplay)}
             </p>
             {#each orderByDateOrTime(comment.replies.comments) as reply}
                 <p class="col-start-3 col-span-12 bg-cyan-100 flex flex-column">
@@ -71,7 +114,9 @@
                 </p>
 
                 <p class="col-start-4 col-span-12 bg-cyan-100">
-                    {reply.snippet.textDisplay}
+                    {he.decode(reply.snippet.textDisplay, {
+                        useNamedReferences: true,
+                    })}
                 </p>
             {/each}
         </div>
@@ -91,8 +136,11 @@
                     )}
                 </p>
             </div>
-            <p class="col-start-3 col-span-12">
-                {comment.snippet.topLevelComment.snippet.textDisplay}
+            <p class="col-start-3 col-span-12" id={i + "-" + comment.id}>
+                {decodeHtml(
+                    comment.snippet.topLevelComment.snippet.textDisplay
+                )}
+                <!-- {parseHTML(comment.snippet.topLevelComment.snippet.textDisplay, comment.id)} -->
             </p>
         </div>
     {/if}
