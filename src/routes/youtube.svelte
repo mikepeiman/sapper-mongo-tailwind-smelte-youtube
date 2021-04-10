@@ -237,7 +237,7 @@
     </div>
 </div>
 
-<div class="bg-cyan-100 border-2 p-2 my-2 flex flex-wrap justify-start justify-items-start">
+<div class="bg-cyan-100 border-2 border-cyan-700 my-2 flex flex-wrap justify-start justify-items-start">
     {#if currentDisplayContext == "Channel Details"}
         <ChannelDetails {channelDetails} />
     {/if}

@@ -1,10 +1,8 @@
 <script>
     export let id;
     import { storeComments } from "../../scripts/stores.js";
-    import Treeview from "../smelte/Treeview";
     import { onMount } from "svelte";
     import he from "he";
-    import { each } from "svelte/internal";
 
     onMount(() => {
         console.log(
@@ -15,10 +13,27 @@
 
         let c = $storeComments;
         c.forEach((comment, i) => {
-            parseHTML(
-                comment.snippet.topLevelComment.snippet.textDisplay,
-                i + "-" + comment.id
-            );
+            let replyCount = comment.snippet.totalReplyCount;
+            if (replyCount == 0) {
+            console.log(`🚀❌ ~ file: Comments.svelte ~ line 16 ~ c.forEach ~ i replyCount == 0`, i)
+
+                parseHTML(
+                    comment.snippet.topLevelComment.snippet.textDisplay,
+                    comment.id
+                );
+            } else {
+                console.log(`🚀♻🔁 ~ file: Comments.svelte ~ line 16 ~ c.forEach ~ i replyCount != 0`, i)
+                if (comment.snippet.topLevelComment.snippet.textDisplay) {
+                    parseHTML(
+                        comment.snippet.topLevelComment.snippet.textDisplay,
+                        comment.id
+                    );
+                }
+                let replies = comment.replies.comments
+                replies.forEach(reply => {
+                    parseHTML(reply.snippet.textDisplay, reply.id);
+                })
+            }
         });
     });
 
@@ -51,90 +66,92 @@
     }
 
     function parseHTML(html, id) {
-        // console.log(
-        //     `🚀 ~ file: Comments.svelte ~ line 59 ~ parseHTML ~ html, id`,
-        //     html,
-        //     id
-        // );
         var p = document.createElement("p");
-        p.className = "bg-green-200"
-        p.innerHTML = html;
         let el = document.getElementById(id);
+        p.innerHTML = html;
         if (el) {
+            p.className = "bg-white p-2 m-0 rounded";
+            // console.log(`🚀 ~ file: Comments.svelte ~ line 59 ~ parseHTML ~ el.customclasses`, el.customclasses)
             el.appendChild(p);
         }
     }
 </script>
 
-<h4>Comments component {id}</h4>
+<span class="border-b-10 border-cyan-700" />
 {#each $storeComments as comment, i}
     {#if comment.snippet.totalReplyCount > 0}
-        <div class="grid comment bg-orange-100">
+        <div class="grid comment bg-cyan-100 border-b-2 border-cyan-500 p-2">
             <div class="flex flex-col col-span-2">
-                <p>{i}</p>
-                :
-                <p>
+                <p class="m-0 mb-0 text-cyan-700 font-bold">
+                    <span class="bg-gray-100 p-1 rounded">{i} </span>
                     {comment.snippet.topLevelComment.snippet.authorDisplayName}
                 </p>
-                <p>
-                    {getDate(
-                        comment.snippet.topLevelComment.snippet.publishedAt
-                    ) -
-                        getTime(
+                <p class="m-0 mb-0">
+                    <span class="text-grey-500">
+                        {getDate(
                             comment.snippet.topLevelComment.snippet.publishedAt
                         )}
+                    </span><span class="text-grey-500">
+                        {getTime(
+                            comment.snippet.topLevelComment.snippet.publishedAt
+                        )}
+                    </span>
                 </p>
             </div>
-            <p class="col-start-3 col-span-12">
-                {he.decode(comment.snippet.topLevelComment.snippet.textDisplay)}
-            </p>
-            {#each orderByDateOrTime(comment.replies.comments) as reply}
-                <p class="col-start-3 col-span-12 bg-cyan-100 flex flex-column">
-                    <span class="bg-cyan-300"
-                        >{reply.snippet.authorDisplayName}</span
-                    >
-                    <span class="bg-cyan-400"
-                        >{getDate(reply.snippet.publishedAt)} - {getTime(
-                            reply.snippet.publishedAt
-                        )}</span
-                    >
-                </p>
+            <div class="col-start-3 col-span-12" id={comment.id} />
 
-                <p class="col-start-4 col-span-12 bg-cyan-100">
-                    {he.decode(reply.snippet.textDisplay, {
+            {#each orderByDateOrTime(comment.replies.comments) as reply}
+                <div class="flex flex-col col-start-2 col-span-2">
+                    <p class="m-0 mb-0 text-cyan-700 font-bold">
+                        <span class="bg-gray-100 p-1 rounded">{i}: </span>
+                        {reply.snippet.authorDisplayName}
+                    </p>
+                    <p class="m-0 mb-0">
+                        <span class="text-grey-500">
+                            {getDate(reply.snippet.publishedAt)}
+                        </span><span class="text-grey-500">
+                            {getTime(reply.snippet.publishedAt)}
+                        </span>
+                    </p>
+                </div>
+
+                <div
+                    class="col-start-4 col-span-11 bg-gray-100 m-2 p-2"
+                    id={reply.id}
+                >
+                    <!-- {he.decode(reply.snippet.textDisplay, {
                         useNamedReferences: true,
-                    })}
-                </p>
+                    })} -->
+                </div>
             {/each}
         </div>
     {:else}
-        <div class="grid comment bg-green-100">
-            <p>{i}</p>
-            :
+        <div class="grid comment bg-cyan-100 border-b-2 border-cyan-500 p-2">
+            <!-- <span class="absolute t-0 l-0">{i}</span> -->
             <div class="flex flex-col col-span-2">
-                <p>
+                <p class="m-0 mb-0 text-cyan-700 font-bold">
+                    <span class="bg-gray-100 p-1 rounded">{i}: </span>
                     {comment.snippet.topLevelComment.snippet.authorDisplayName}
                 </p>
-                <p>
-                    {getDate(
-                        comment.snippet.topLevelComment.snippet.publishedAt
-                    )} - {getTime(
-                        comment.snippet.topLevelComment.snippet.publishedAt
-                    )}
+                <p class="m-0 mb-0">
+                    <span class="text-grey-500">
+                        {getDate(
+                            comment.snippet.topLevelComment.snippet.publishedAt
+                        )}
+                    </span><span class="text-grey-500">
+                        {getTime(
+                            comment.snippet.topLevelComment.snippet.publishedAt
+                        )}
+                    </span>
                 </p>
             </div>
-            <p class="col-start-3 col-span-12" id={i + "-" + comment.id}>
-                {decodeHtml(
-                    comment.snippet.topLevelComment.snippet.textDisplay
-                )}
-                <!-- {parseHTML(comment.snippet.topLevelComment.snippet.textDisplay, comment.id)} -->
-            </p>
+            <div class="col-start-3 col-span-12" id={comment.id} />
         </div>
     {/if}
 {/each}
 
 <style>
     .comment {
-        grid-template-columns: repeat(15, 6.5vw);
+        grid-template-columns: repeat(15, calc(95vw / 15));
     }
 </style>
