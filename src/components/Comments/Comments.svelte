@@ -11,20 +11,7 @@
             `🚀 ~ file: Comments.svelte ~ line 4 ~ storeComments`,
             $storeComments
         );
-        let y = orderByDateOrTime($storeComments[41].replies.comments);
-        console.log(`🚀 ~ file: Comments.svelte ~ line 13 ~ onMount ~ y`, y);
-        let text =
-            $storeComments[0].snippet.topLevelComment.snippet.textDisplay;
-        let decode = decodeHtml(text);
-        console.log(
-            `🚀 ~ file: Comments.svelte ~ line 18 ~ onMount ~ decode`,
-            decode
-        );
-        let broke = text.replace(/<br\s*\/?>/gim, "\\n");
-        console.log(
-            `🚀 ~ file: Comments.svelte ~ line 17 ~ onMount ~ broke`,
-            broke
-        );
+        // let broke = text.replace(/<br\s*\/?>/gim, "\\n");
 
         let c = $storeComments;
         c.forEach((comment, i) => {
@@ -50,10 +37,10 @@
                 ? 1
                 : -1
         );
-        console.log(
-            `🚀 ~ file: Comments.svelte ~ line 26 ~ orderByDateOrTime ~ x`,
-            x
-        );
+        // console.log(
+        //     `🚀 ~ file: Comments.svelte ~ line 26 ~ orderByDateOrTime ~ x`,
+        //     x
+        // );
         return x;
     }
 
@@ -64,11 +51,11 @@
     }
 
     function parseHTML(html, id) {
-        console.log(
-            `🚀 ~ file: Comments.svelte ~ line 59 ~ parseHTML ~ html, id`,
-            html,
-            id
-        );
+        // console.log(
+        //     `🚀 ~ file: Comments.svelte ~ line 59 ~ parseHTML ~ html, id`,
+        //     html,
+        //     id
+        // );
         var p = document.createElement("p");
         p.className = "bg-green-200"
         p.innerHTML = html;

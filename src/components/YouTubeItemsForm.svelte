@@ -1,9 +1,9 @@
 <script>
     export let channelName;
-    export let channelId 
-    export let uploadsId 
-    export let playlistId 
-    export let videoId
+    export let channelId;
+    export let uploadsId;
+    export let playlistId;
+    export let videoId;
     let playlists,
         playlistsList,
         maxResults = 50;
@@ -38,6 +38,24 @@
     $: uploadsId = controlItems["uploadsId"]["varName"];
     $: playlistId = controlItems["playlistId"]["varName"];
     $: videoId = controlItems["videoId"]["varName"];
+
+    $: if (typeof window != "undefined") {
+        storeChannelName.subscribe((val) => {
+            controlItems["channelName"]["varName"] = val;
+        });
+        storeChannelId.subscribe((val) => {
+            controlItems["channelId"]["varName"] = val;
+        });
+        storeUploadsId.subscribe((val) => {
+            controlItems["uploadsId"]["varName"] = val;
+        });
+        storeVideoId.subscribe((val) => {
+            controlItems["videoId"]["varName"] = val;
+        });
+        storePlaylistId.subscribe((val) => {
+            controlItems["playlistId"]["varName"] = val;
+        });
+    }
 
     onMount(() => {
         loadDataFromLS();
@@ -167,7 +185,7 @@
         }
         if (res.kind == "youtube#videoListResponse") {
             storeCurrentDisplayContext.set("Video Details");
-        } 
+        }
     }
 
     function getVideosByPlaylistId(listType) {
@@ -238,18 +256,16 @@
                         );
                         items = res.items[0];
                         parseResultData($storeCurrentDisplayContext, items);
-                    } 
-                    if (totalResults == 0){
+                    }
+                    if (totalResults == 0) {
                         items = [];
                         channelId = uploadsId = "Channel not found";
-                        
                     }
 
-    
                     console.log("items: ", items);
                     $storeChannelDetails = channelDetails = items;
                     $storeChannelId = channelId = items.id;
-                    $storeChannelName = channelName
+                    $storeChannelName = channelName;
                     // storeChannelName.set(channelName);
                     // storeChannelDetails.set(channelDetails);
                     // storeChannelId.set(items.id);
@@ -266,6 +282,7 @@
             videoId
         );
         videoDetails = {};
+        $storeVideoId = videoId
         return gapi.client.youtube.videos
             .list({
                 part: ["snippet,contentDetails,statistics"],
@@ -335,7 +352,10 @@
     function parseResultData(type, res) {
         console.log(`parseResultData(type, res) res: `, type, res);
         if (type == "Channel Details") {
-            console.log(`🚀 ~ file: YouTubeItemsForm.svelte ~ line 338 ~ parseResultData ~ type`, type)
+            console.log(
+                `🚀 ~ file: YouTubeItemsForm.svelte ~ line 338 ~ parseResultData ~ type`,
+                type
+            );
             $storeChannelId = channelId = res.id;
             // nextPageToken = res.nextPageToken;
             if (res.snippet) {
