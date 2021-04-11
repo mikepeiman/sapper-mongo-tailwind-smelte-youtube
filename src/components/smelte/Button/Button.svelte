@@ -113,7 +113,7 @@
     iClasses = iconCb.flush().add(txt(), fab && !iconClass).get();
   }
 
-  const ripple = createRipple((text || fab || outlined) ? color : "white");
+  // const ripple = createRipple((text || fab || outlined) ? color : "white");
 
   const props = filterProps([
     'outlined',
@@ -138,8 +138,9 @@
     {href}
     {...props}
   >
+  <!--   <button    use:ripple -->
     <button
-      use:ripple
+
       class={classes}
       {...props}
       {type}
@@ -156,8 +157,9 @@
     </button>
   </a>
 {:else}
+<!-- <button     use:ripple -->
   <button
-    use:ripple
+
     class={classes}
     {...props}
     {type}

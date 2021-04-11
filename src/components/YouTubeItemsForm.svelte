@@ -9,11 +9,8 @@
         maxResults = 50;
     let pageInfo = {};
     let pagesOfResults = 0;
-    let nextPageTokenComments = "";
-    let nextPageTokenPlaylistList = "";
-    let nextPageTokenPlaylistVideos = "";
+    let pageToken = "";
     let videosList = [];
-    let items, res;
     let channelDescription, channelDetails, channelThumbnails, videoDetails;
     import Button from "./smelte/Button";
     import TextField from "./smelte/TextField";
@@ -31,6 +28,8 @@
         storeVideosList,
         storePlaylistId,
         storeComments,
+        storeNextPageToken,
+        storePagination,
     } from "../scripts/stores.js";
 
     $: channelName = controlItems["channelName"]["varName"];
@@ -53,9 +52,49 @@
             controlItems["videoId"]["varName"] = val;
         });
         storePlaylistId.subscribe((val) => {
+            console.log(`🚀 ~ file: YouTubeItemsForm.svelte ~ line 56 ~ storePlaylistId.subscribe ~ val`, val)
             controlItems["playlistId"]["varName"] = val;
         });
     }
+    $: if (typeof window != "undefined") {
+        console.log(
+            `$storePagination.currentPageNumber: ${$storePagination.currentPageNumber}`
+        );
+        // doPagination();
+        console.log(
+            `🚀 ~ file: YouTubeItemsForm.svelte ~ line 73 ~ storePagination.subscribe ~ pageToken`,
+            pageToken
+        );
+    }
+
+    function doPagination() {
+        let val = $storePagination;
+        if (val.direction == "forward") {
+            pageToken = $storeNextPageToken;
+            getCommentsFromVideoId($storeVideoId);
+        }
+        if (val.direction == "back") {
+            pageToken = val[id][val.currentPageNumber - 1] || "";
+            getCommentsFromVideoId($storeVideoId);
+        }
+    }
+    // storePagination.subscribe((val) => {
+    //     console.log(
+    //         `🚀 ~ file: YouTubeItemsForm.svelte ~ line 61 ~ storePagination.subscribe ~ val`,
+    //         val
+    //     );
+    //     if (val.direction == "forward") {
+    //         pageToken = $storeNextPageToken
+    //         getCommentsFromVideoId($storeVideoId);
+    //     }
+    //     if (val.direction == "back") {
+    //         pageToken = val[id][val.currentPageNumber - 1] || ""
+    //         getCommentsFromVideoId($storeVideoId);
+    //     }
+    //     console.log(`🚀 ~ file: YouTubeItemsForm.svelte ~ line 73 ~ storePagination.subscribe ~ pageToken`, pageToken)
+
+    // });
+    // }
 
     onMount(() => {
         loadDataFromLS();
@@ -282,7 +321,8 @@
             videoId
         );
         videoDetails = {};
-        $storeVideoId = videoId
+        $storeVideoId = videoId;
+        let items, res
         return gapi.client.youtube.videos
             .list({
                 part: ["snippet,contentDetails,statistics"],
@@ -296,7 +336,7 @@
                     console.log("Result: ", response.result);
                     res = response.result;
                     if (res.items) {
-                        setDisplayContext(res);
+
                         parseResultData($storeCurrentDisplayContext, res);
                     } else {
                         id = "Playlist not found";
@@ -305,7 +345,8 @@
                     videoDetails = items;
                     storeVideoDetails.set(videoDetails);
                     console.log("items videoDetails: ", items);
-                    getCommentsFromVideoId(videoId);
+                    getCommentsFromVideoId(videoId, videoDetails);
+                    setDisplayContext(res);
                 },
                 function (err) {
                     console.error("Execute error", err);
@@ -315,33 +356,28 @@
 
     function getCommentsFromVideoId(id) {
         console.log(
-            `🚀 ~ file: YouTubeItemsForm.svelte ~ line 225 ~ getCommentsFromVideoId ~ nextPageTokenComments`,
-            nextPageTokenComments
+            `🚀 ~ file: YouTubeItemsForm.svelte ~ line 225 ~ getCommentsFromVideoId ~ $storeNextPageToken`,
+            $storeNextPageToken
         );
         console.log(
             `🚀 ~ file: YouTubeItemsForm.svelte ~ line 205 ~ getCommentsFromVideoId ~ id`,
             id
         );
-        let comments = [];
-        let comment = {};
+        let items, res
         return gapi.client.youtube.commentThreads
             .list({
                 part: ["id,snippet,replies"],
                 videoId: id,
                 maxResults: 100,
-                pageToken: nextPageTokenComments,
+                pageToken: pageToken,
             })
             .then(
                 function (response) {
-                    // Handle the results here (response.result has the parsed body).
-                    console.log(
-                        "🦜🦜🦜getCommentsFromVideoId Response",
-                        response
-                    );
-                    nextPageTokenComments = response.result.nextPageToken;
-
-                    comments = response.result.items;
-                    storeComments.set(comments);
+                    res = response.result;
+                    console.log(`🦜🦜🦜getCommentsFromVideoId result`, res);
+                    $storeNextPageToken = res.nextPageToken;
+                    $storeComments = {id: id, items: res.items};
+                    $storeVideoDetails.comments = res.items
                 },
                 function (err) {
                     console.error("Execute error", err);
@@ -357,7 +393,6 @@
                 type
             );
             $storeChannelId = channelId = res.id;
-            // nextPageToken = res.nextPageToken;
             if (res.snippet) {
                 channelDescription = res.snippet.description;
                 let thumbs = res.snippet.thumbnails;
@@ -378,7 +413,7 @@
                 pagesOfResults = Math.ceil(
                     res.pageInfo.totalResults / res.pageInfo.resultsPerPage
                 );
-                nextPageTokenPlaylistList = res.nextPageToken;
+                $storeNextPageToken = res.nextPageToken;
             });
             console.log(`ID res: `, res);
             if (res.kind == "youtube#playlistListResponse") {
@@ -389,13 +424,7 @@
                 storeVideosList.set(res.items);
             }
         } else {
-            res.items.forEach((item) => {
-                console.log(
-                    `🚀 ~ file: YouTube_OAuth.svelte ~ line 306 ~ res.items.forEach ~ item`,
-                    item
-                );
-            });
-            console.log(`ID res: `, res);
+              console.log(`parseResultData not matching list types: res: `, res);
         }
     }
 </script>

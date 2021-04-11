@@ -13,7 +13,19 @@ let videoId = writable("")
 let uploadsId = writable("")
 let playlistId = writable("")
 let playlistName = writable("")
-let comments = writable([])
+let comments = writable({})
+let nextPageToken = writable("")
+let currentPageToken = writable("")
+let previousPageToken = writable("")
+let pagination = writable({
+    direction: "",
+    currentPageNumber: 0,
+    "playlists": [{
+        id: "",
+        pageTokens: [""]
+    }],
+    "comments": {}
+})
 
 export const storeVideosList = {
     subscribe: videosList.subscribe,
@@ -110,5 +122,39 @@ export const storeComments = {
     set: val => {
         localStorage.setItem("comments", JSON.stringify(val))
         comments.set(val)
+    }
+}
+
+export const storeNextPageToken = {
+    subscribe: nextPageToken.subscribe,
+    set: val => {
+        localStorage.setItem("nextPageToken", JSON.stringify(val))
+        nextPageToken.set(val)
+    }
+}
+
+export const storeCurrentPageToken = {
+    subscribe: currentPageToken.subscribe,
+    set: val => {
+        localStorage.setItem("currentPageToken", JSON.stringify(val))
+        currentPageToken.set(val)
+    }
+}
+
+
+export const storePreviousPageToken = {
+    subscribe: previousPageToken.subscribe,
+    set: val => {
+        localStorage.setItem("previousPageToken", JSON.stringify(val))
+        previousPageToken.set(val)
+    }
+}
+
+
+export const storePagination = {
+    subscribe: pagination.subscribe,
+    set: val => {
+        localStorage.setItem("pagination", JSON.stringify(val))
+        pagination.set(val)
     }
 }

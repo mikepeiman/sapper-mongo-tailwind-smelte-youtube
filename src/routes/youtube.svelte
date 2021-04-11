@@ -10,7 +10,7 @@
     import Button from "../components/smelte/Button";
     import ChannelDetails from "../components/ChannelDetails.svelte";
     import Video from "../components/Video.svelte";
-    import lsget from '../scripts/_lsget.js'
+    import lsget from "../scripts/_lsget.js";
 
     import {
         storeVideosList,
@@ -23,7 +23,11 @@
         storeUploadsId,
         storePlaylistId,
         storeVideoId,
-        storeComments
+        storeComments,
+        storePagination,
+        storeNextPageToken,
+        storeCurrentPageToken,
+        storePreviousPageToken,
     } from "../scripts/stores.js";
     import { API_KEY } from "../scripts/secret_keys.js";
     import { CLIENT_ID } from "../scripts/secret_keys.js";
@@ -39,7 +43,7 @@
     let channelName = "";
     let currentDisplayContext = "default";
     // Options: "Channel Details", "Collection", "Playlist", "Video Details"
-    let channelId, videoId, comments, videoDetails
+    let channelId, videoId, comments, videoDetails;
     let channelDetails = {};
     // let videoDetails = $storeVideoDetails;
     let channelDescription = "";
@@ -91,19 +95,21 @@
         playlistId = val;
     });
 
-
     function loadDataFromLS() {
         $storeChannelName = channelName = lsget("channelName");
         $storeChannelDetails = channelDetails = lsget("channelDetails");
         $storeVideoDetails = videoDetails = lsget("videoDetails");
         $storeVideosList = videosList = lsget("videosList");
         $storePlaylistsList = playlistsList = lsget("playlistsList");
-        $storeCurrentDisplayContext = currentDisplayContext = lsget("currentDisplayContext");
+        $storeCurrentDisplayContext = currentDisplayContext = lsget(
+            "currentDisplayContext"
+        );
         $storeChannelId = channelId = lsget("channelId");
         $storeUploadsId = uploadsId = lsget("uploadsId");
         $storePlaylistId = playlistId = lsget("playlistId");
         $storeVideoId = videoId = lsget("videoId");
         $storeComments = comments = lsget("comments");
+        $storeNextPageToken = lsget("nextPageTokenComments");
     }
 
     function loadGapi() {
@@ -192,12 +198,39 @@
         setSigninStatus();
     }
 
+    function buildPagination(dir, id) {
+        $storePagination.direction = dir;
+        let pageNum, arr;
+        if (dir == "forward") {
+            $storePreviousPageToken = $storeCurrentPageToken
+            $storePagination.currentPageNumber++;
+            pageNum = $storePagination.currentPageNumber;
+            arr = $storePagination.comments[id];
+            if (!arr) {
+                $storePagination.comments[id] = [];
+            }
+            arr = $storePagination.comments[id];
+            $storePagination.comments[id][pageNum] = $storeNextPageToken;
+            console.log(
+                `🚀 ~ file: youtube.svelte ~ line 203 ~ buildPagination ~ arr 🔥🔥🔥`,
+                arr
+            );
+        }
+        if (dir == "back") {
+            $storePagination.currentPageNumber--;
+            arr = $storePagination.comments[id];
+            console.log(
+                `🚀 ~ file: youtube.svelte ~ line 203 ~ buildPagination ~ arr 💦💦💦`,
+                arr
+            );
+        }
+    }
+
     function pagination(event) {
+        let id = $storeVideoId;
+        console.log(`🚀 pagination ~ id`, id);
         let dir = event.detail.dir;
-        console.log(
-            `🚀 ~ file: YouTube_OAuth.svelte ~ line 266 ~ pagination ~ dir `,
-            dir
-        );
+        buildPagination(dir, id);
     }
 </script>
 
@@ -237,7 +270,9 @@
     </div>
 </div>
 
-<div class="bg-cyan-100 border-2 border-cyan-700 my-2 flex flex-wrap justify-start justify-items-start">
+<div
+    class="bg-cyan-100 border-2 border-cyan-700 my-2 flex flex-wrap justify-start justify-items-start"
+>
     {#if currentDisplayContext == "Channel Details"}
         <ChannelDetails {channelDetails} />
     {/if}
