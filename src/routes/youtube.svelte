@@ -42,7 +42,7 @@
     let forUsername = "";
     let channelName = "";
     let currentDisplayContext = "default";
-    // Options: "Channel Details", "Collection", "Playlist", "Video Details"
+    // Options: "Channel Details", "playlistsList", "playlist", "videoDetails"
     let channelId, videoId, comments, videoDetails;
     let channelDetails = {};
     // let videoDetails = $storeVideoDetails;
@@ -273,11 +273,11 @@
 <div
     class="bg-cyan-100 border-2 border-cyan-700 my-2 flex flex-wrap justify-start justify-items-start"
 >
-    {#if currentDisplayContext == "Channel Details"}
+    {#if currentDisplayContext == "channelDetails"}
         <ChannelDetails {channelDetails} />
     {/if}
 
-    {#if currentDisplayContext == "Collection"}
+    {#if currentDisplayContext == "playlistsList"}
         {#if pageInfo.totalResults}
             <h4>
                 {currentDisplayContext}: # of playlistsList: {pageInfo.totalResults}
@@ -287,12 +287,12 @@
             <Playlist {playlist} />
         {/each}
     {/if}
-    {#if currentDisplayContext == "Playlist"}
+    {#if currentDisplayContext == "playlist"}
         {#each videosList as item}
             <PlaylistItem {item} />
         {/each}
     {/if}
-    {#if currentDisplayContext == "Video Details"}
+    {#if currentDisplayContext == "videoDetails"}
         <Video {videoDetails} />
     {/if}
 </div>

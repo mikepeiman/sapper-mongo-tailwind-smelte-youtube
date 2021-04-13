@@ -1,14 +1,16 @@
 <script>
     export let id;
-    import { storeComments, storeVideoDetails } from "../../scripts/stores.js";
+    import { storeComments, storePagination, storeVideoDetails } from "../../scripts/stores.js";
     import { onMount, afterUpdate } from "svelte";
     $: localComments = $storeComments.items;
+    $: pageNum = $storePagination.pageNum
     // $: parseComments($storeComments.items);
     $: videoMatch = $storeComments.id == id;
 
     onMount(() => {
 
     });
+
     afterUpdate(() => {
         if (videoMatch) {
             parseComments(localComments);
@@ -74,7 +76,7 @@
 </script>
 
 <span class="border-b-10 border-cyan-700" />
-{#if videoMatch && $storeVideoDetails.comments.length}
+<!-- {#if videoMatch && $storeVideoDetails.comments.length} -->
 <!-- {parseComments($storeVideoDetails.comments)} -->
     {#each localComments as comment, i}
         {#if comment.snippet.totalReplyCount > 0}
@@ -153,7 +155,7 @@
             </div>
         {/if}
     {/each}
-{/if}
+<!-- {/if} -->
 
 <style>
     .comment {

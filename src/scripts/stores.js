@@ -19,6 +19,7 @@ let currentPageToken = writable("")
 let previousPageToken = writable("")
 let pagination = writable({
     direction: "",
+    tokens: [""],
     currentPageNumber: 0,
     "playlists": [{
         id: "",

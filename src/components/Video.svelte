@@ -1,9 +1,24 @@
 <script>
     export let videoDetails;
     import Comments from "./Comments";
+    let cols = 12;
+
+    function getDate(date) {
+        let x = new Date(date).toDateString();
+        return x;
+    }
+    function getTime(date) {
+        let x = new Date(date).toLocaleTimeString();
+        return x;
+    }
 </script>
 
-<div class="playlistItem grid row-start-auto grid-cols-12 px-4 pt-4 pb-8 border-b-8 border-cyan-700">
+<div
+    class="playlistItem grid row-start-auto grid-cols-12 px-4 pt-4 pb-8 border-b-8 border-cyan-700"
+>
+    {#each Array(cols) as _, col}
+        <p>{col}</p>
+    {/each}
     <img
         class="thumbnail col-start-1 col-span-2"
         src={videoDetails.snippet.thumbnails.default.url}
@@ -14,13 +29,12 @@
         {videoDetails.snippet.title}
     </h2>
     <div class="col-start-9 col-span-3 flex-col">
-        <div class="flex">
-            <p>Creation Date: </p>
-            <div>{videoDetails.snippet.publishedAt}</div>
+        <div class="flex flex-col">
+            <p>{getDate(videoDetails.snippet.publishedAt)}</p>
+            <p>{getTime(videoDetails.snippet.publishedAt)}</p>
         </div>
         <div class="flex">
-            <p>Id: </p>
-            <div>{JSON.stringify(videoDetails.id)}</div>
+            <div>ID: {videoDetails.id}</div>
         </div>
     </div>
 </div>

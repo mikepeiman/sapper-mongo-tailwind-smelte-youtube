@@ -52,7 +52,10 @@
             controlItems["videoId"]["varName"] = val;
         });
         storePlaylistId.subscribe((val) => {
-            console.log(`🚀 ~ file: YouTubeItemsForm.svelte ~ line 56 ~ storePlaylistId.subscribe ~ val`, val)
+            console.log(
+                `🚀 ~ file: YouTubeItemsForm.svelte ~ line 56 ~ storePlaylistId.subscribe ~ val`,
+                val
+            );
             controlItems["playlistId"]["varName"] = val;
         });
     }
@@ -60,7 +63,10 @@
         console.log(
             `$storePagination.currentPageNumber: ${$storePagination.currentPageNumber}`
         );
-        // doPagination();
+        let num = $storePagination.currentPageNumber
+        if (num >= 0 && num <=10) {
+            doPagination();
+        }
         console.log(
             `🚀 ~ file: YouTubeItemsForm.svelte ~ line 73 ~ storePagination.subscribe ~ pageToken`,
             pageToken
@@ -71,30 +77,34 @@
         let val = $storePagination;
         if (val.direction == "forward") {
             pageToken = $storeNextPageToken;
+            val.tokens.push(pageToken)
             getCommentsFromVideoId($storeVideoId);
         }
         if (val.direction == "back") {
-            pageToken = val[id][val.currentPageNumber - 1] || "";
+            pageToken = val.tokens[val.currentPageNumber - 1] || "";
             getCommentsFromVideoId($storeVideoId);
         }
     }
-    // storePagination.subscribe((val) => {
-    //     console.log(
-    //         `🚀 ~ file: YouTubeItemsForm.svelte ~ line 61 ~ storePagination.subscribe ~ val`,
-    //         val
-    //     );
-    //     if (val.direction == "forward") {
-    //         pageToken = $storeNextPageToken
-    //         getCommentsFromVideoId($storeVideoId);
-    //     }
-    //     if (val.direction == "back") {
-    //         pageToken = val[id][val.currentPageNumber - 1] || ""
-    //         getCommentsFromVideoId($storeVideoId);
-    //     }
-    //     console.log(`🚀 ~ file: YouTubeItemsForm.svelte ~ line 73 ~ storePagination.subscribe ~ pageToken`, pageToken)
 
-    // });
-    // }
+    // On pagination, need to do:
+    //  1. Increment/decrement pageNum
+    //  2. check if pageToken exists at that index
+    //      2a. IF EXISTS => load data from that index
+    //      2b. IF NOT => fetch data from that index
+    //  3.
+
+    function populateTokensList() {
+        let ctx = $storeCurrentDisplayContext
+        if(ctx == "playlistsLists"){
+            $storePagination[val]["playlistsLists"][id].push(pageToken)
+        }
+        if(ctx == "playlist"){
+            $storePagination[val]["playlist"][id].push(pageToken)
+        }
+        if(ctx == "videoDetails"){
+            $storePagination[val]["videoDetails"][id].push(pageToken)
+        }
+    }
 
     onMount(() => {
         loadDataFromLS();
@@ -145,7 +155,7 @@
             varName: videoId,
             id: "videoId",
             fullName: "Video ID",
-            buttonText: "Video Details",
+            buttonText: "videoDetails",
             function: () => getVideoFromId(),
         },
     };
@@ -208,22 +218,22 @@
             res.kind == "youtube#channelListResponse" ||
             res.kind == "youtube#channel"
         ) {
-            storeCurrentDisplayContext.set("Channel Details");
+            storeCurrentDisplayContext.set("channelDetails");
         }
         if (res.kind == "youtube#playlistListResponse") {
-            storeCurrentDisplayContext.set("Collection");
+            storeCurrentDisplayContext.set("playlistsList");
         }
         if (
             res.kind == "youtube#playlistItemListResponse" ||
             res.kind == "youtube#playlist"
         ) {
-            storeCurrentDisplayContext.set("Playlist");
+            storeCurrentDisplayContext.set("playlist");
         }
         if (res.kind == "youtube#playlistItem") {
-            storeCurrentDisplayContext.set("Video Details");
+            storeCurrentDisplayContext.set("videoDetails");
         }
         if (res.kind == "youtube#videoListResponse") {
-            storeCurrentDisplayContext.set("Video Details");
+            storeCurrentDisplayContext.set("videoDetails");
         }
     }
 
@@ -270,6 +280,7 @@
 
     function searchByChannelName() {
         videosList = [];
+        let items, res
         return gapi.client.youtube.channels
             .list({
                 part: ["snippet,contentDetails,statistics"],
@@ -281,7 +292,7 @@
                     // Handle the results here (response.result has the parsed body).
                     console.log("Response", response);
                     console.log("Result: ", response.result);
-                    let res = response.result;
+                    res = response.result;
                     setDisplayContext(res);
                     let totalResults = res.pageInfo.totalResults;
                     if (totalResults == 1) {
@@ -322,7 +333,7 @@
         );
         videoDetails = {};
         $storeVideoId = videoId;
-        let items, res
+        let items, res;
         return gapi.client.youtube.videos
             .list({
                 part: ["snippet,contentDetails,statistics"],
@@ -336,7 +347,6 @@
                     console.log("Result: ", response.result);
                     res = response.result;
                     if (res.items) {
-
                         parseResultData($storeCurrentDisplayContext, res);
                     } else {
                         id = "Playlist not found";
@@ -363,7 +373,7 @@
             `🚀 ~ file: YouTubeItemsForm.svelte ~ line 205 ~ getCommentsFromVideoId ~ id`,
             id
         );
-        let items, res
+        let items, res;
         return gapi.client.youtube.commentThreads
             .list({
                 part: ["id,snippet,replies"],
@@ -376,8 +386,9 @@
                     res = response.result;
                     console.log(`🦜🦜🦜getCommentsFromVideoId result`, res);
                     $storeNextPageToken = res.nextPageToken;
-                    $storeComments = {id: id, items: res.items};
-                    $storeVideoDetails.comments = res.items
+                    // $storePagination[tokens].push(res.nextPageToken)
+                    $storeComments = { id: id, items: res.items };
+                    $storeVideoDetails.comments = res.items;
                 },
                 function (err) {
                     console.error("Execute error", err);
@@ -406,7 +417,7 @@
                 uploadsId = res.contentDetails.relatedPlaylists.uploads;
                 storeUploadsId.set(uploadsId);
             }
-        } else if (type == "Collection" || type == "Playlist") {
+        } else if (type == "playlistsList" || type == "playlist") {
             res.items.forEach((item) => {
                 // videosList = [...videosList, item];
                 pageInfo = res.pageInfo;
@@ -424,7 +435,7 @@
                 storeVideosList.set(res.items);
             }
         } else {
-              console.log(`parseResultData not matching list types: res: `, res);
+            console.log(`parseResultData not matching list types: res: `, res);
         }
     }
 </script>
