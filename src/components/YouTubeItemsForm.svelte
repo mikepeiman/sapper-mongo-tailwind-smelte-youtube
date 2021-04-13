@@ -155,7 +155,7 @@
             varName: videoId,
             id: "videoId",
             fullName: "Video ID",
-            buttonText: "videoDetails",
+            buttonText: "Video Details",
             function: () => getVideoFromId(),
         },
     };
@@ -460,6 +460,7 @@
             </div>
             <Button
                 inputControl
+                color="amber"
                 class="yt-button h-14 self-start mt-2 col-start-8 col-span-3"
                 on:click={controlItems[item].function}
                 >{controlItems[item].buttonText}</Button
