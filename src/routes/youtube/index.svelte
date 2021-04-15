@@ -11,6 +11,7 @@
     import ChannelDetails from "../../components/ChannelDetails.svelte";
     import Video from "../../components/Video.svelte";
     import lsget from "../../scripts/_lsget.js";
+    import dateTime from "../../scripts/_dateTime.js"
     // const childProcess =  require("child_process")
     // const exec = childProcess
     // import {childProcess} from "@lib/childProcess.js";
@@ -300,7 +301,7 @@
         {/each}
     {/if}
     {#if currentDisplayContext == "playlist"}
-        {#each videosList as item}
+        {#each dateTime.sortByMostRecent(videosList) as item}
             <PlaylistItem {item} />
         {/each}
     {/if}
