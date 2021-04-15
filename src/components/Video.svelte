@@ -3,6 +3,8 @@
     import Comments from "./Comments";
     import Icon from "./smelte/Icon";
     import Button from "./smelte/Button";
+    import { storeGetComments} from "../scripts/stores"
+
     let cols = 12;
 
     function getDate(date) {
@@ -17,7 +19,8 @@
     function runPyComments() {
         let id = videoDetails.id
         console.log(`pyComments id ${id}`);
-        childProcess(`"youtube-comment-downloader --youtubeid ${id} --output ${id}.json"`)
+        storeGetComments.set("runPyComments")
+        // childProcess(`"youtube-comment-downloader --youtubeid ${id} --output ${id}.json"`)
     }
 
     function childProcess(cmd) {

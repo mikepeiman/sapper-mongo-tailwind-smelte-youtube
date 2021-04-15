@@ -10,6 +10,7 @@ let channelName = writable("")
 let currentDisplayContext = writable("")
 let channelId = writable("")
 let videoId = writable("")
+let getComments = writable("")
 let uploadsId = writable("")
 let playlistId = writable("")
 let playlistName = writable("")
@@ -114,6 +115,14 @@ export const storeVideoId = {
     set: val => {
         localStorage.setItem("videoId", JSON.stringify(val))
         videoId.set(val)
+    }
+}
+
+export const storeGetComments = {
+    subscribe: getComments.subscribe,
+    set: val => {
+        localStorage.setItem("getComments", JSON.stringify(val))
+        getComments.set(val)
     }
 }
 

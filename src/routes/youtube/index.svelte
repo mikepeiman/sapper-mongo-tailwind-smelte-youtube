@@ -7,10 +7,13 @@
 
     import { onMount } from "svelte";
     // import "smelte/src/tailwind.css";
-    import Button from "../components/smelte/Button";
-    import ChannelDetails from "../components/ChannelDetails.svelte";
-    import Video from "../components/Video.svelte";
-    import lsget from "../scripts/_lsget.js";
+    import Button from "../../components/smelte/Button";
+    import ChannelDetails from "../../components/ChannelDetails.svelte";
+    import Video from "../../components/Video.svelte";
+    import lsget from "../../scripts/_lsget.js";
+    // const childProcess =  require("child_process")
+    // const exec = childProcess
+    // import {childProcess} from "@lib/childProcess.js";
 
     import {
         storeVideosList,
@@ -28,13 +31,13 @@
         storeNextPageToken,
         storeCurrentPageToken,
         storePreviousPageToken,
-    } from "../scripts/stores.js";
-    import { API_KEY } from "../scripts/secret_keys.js";
-    import { CLIENT_ID } from "../scripts/secret_keys.js";
-    import PlaylistItem from "../components/PlaylistItem.svelte";
-    import Playlist from "../components/Playlist.svelte";
-    import YouTubeItemsForm from "../components/YouTubeItemsForm.svelte";
-    import Pagination from "../components/Pagination.svelte";
+    } from "../../scripts/stores.js";
+    import { API_KEY } from "../../scripts/secret_keys.js";
+    import { CLIENT_ID } from "../../scripts/secret_keys.js";
+    import PlaylistItem from "../../components/PlaylistItem.svelte";
+    import Playlist from "../../components/Playlist.svelte";
+    import YouTubeItemsForm from "../../components/YouTubeItemsForm.svelte";
+    import Pagination from "../../components/Pagination.svelte";
 
     let mounted = false,
         gapiLoaded = false;
@@ -225,6 +228,15 @@
             );
         }
     }
+//     function childProcess(cmd) {
+//     const exec = require("child_process").exec;
+//     exec(cmd, (err, stdout, stderr) => console.log(`childProcess result: `, stdout));
+// }
+
+    function processVideoMessage(event) {
+        console.log(`🚀 ~ file: index.svelte ~ line 229 ~ processVideoMessage ~ event`, event)
+        // childProcess(event.detail.cmd)
+    }
 
     function pagination(event) {
         let id = $storeVideoId;
@@ -293,7 +305,7 @@
         {/each}
     {/if}
     {#if currentDisplayContext == "videoDetails"}
-        <Video {videoDetails} />
+        <Video {videoDetails} on:message={processVideoMessage}/>
     {/if}
 </div>
 
