@@ -4,7 +4,8 @@
     import Icon from "./smelte/Icon";
     import Button from "./smelte/Button";
     import { storeGetComments} from "../scripts/stores"
-
+	import { io } from "socket.io-client";
+	const socket = io();
     let cols = 12;
 
     function getDate(date) {
@@ -20,13 +21,18 @@
         let id = videoDetails.id
         console.log(`pyComments id ${id}`);
         storeGetComments.set("runPyComments")
+        let getCommentsAddress = `youtube-comment-downloader --youtubeid ${id} --output ./data/${id}.json`
+        socket.emit("get comments", getCommentsAddress)
+        // childProcess(`"youtube-comment-downloader --youtubeid ${id} --output ${id}.json"`)
+    }
+    function activateVenv() {
+        let id = videoDetails.id
+        let venvCommand = `.\\venv\\Scripts\\activate`
+        socket.emit("activate venv", venvCommand)
         // childProcess(`"youtube-comment-downloader --youtubeid ${id} --output ${id}.json"`)
     }
 
-    function childProcess(cmd) {
-        const exec = require("child_process").exec;
-        exec(cmd, (err, stdout, stderr) => console.log(`childProcess result: `, stdout));
-    }
+
 </script>
 
 <div
@@ -65,6 +71,15 @@
             remove="p-4"
             iconClass="p-2">Get Comments</Button
         >
+        <Button
+        on:click={activateVenv}
+        icon="speaker_notes"
+        color="amber"
+        add="text-left p-2"
+        remove="p-4"
+        iconClass="p-2">Activate Venv</Button
+    >
+
     </div>
 </div>
 <Comments id={videoDetails.id} />
