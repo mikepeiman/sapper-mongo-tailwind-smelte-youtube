@@ -1,18 +1,28 @@
 <script>
-	import io from "socket.io-client";
-	var socket = io.connect()
-	socket.emit("message", "testing sockets")
-	socket.on("connection", (socket) => {
-		console.log("a user connected");
-		socket.on("disconnect", () => {
-			console.log("user disconnected");
-		});
+	import { io } from "socket.io-client";
+	const socket = io();
+
+	socket.on("connect", () => {
+		console.log(
+			`🚀 ~ file: index.svelte ~ line 6 ~ socket.on ~ socket.id`,
+			socket.id
+		);
 	});
+	socket.on("disconnect", () => {
+		console.log(
+			`🚀 ~ file: index.svelte ~ line 9 ~ socket.on ~ socket.id`,
+			socket.id
+		);
+	});
+	function test() {
+		console.log(`socket.emit message "tsting sockets"`)
+		socket.emit("message", "testing sockets");
+	}
 </script>
 
 <svelte:head>
 	<title>Sapper Mongo Tailwind YouTube</title>
-	<!-- <script defer src="/socket.io/socket.io.js"></script> -->
+	<!-- <script src="../../node_modules/socket.io/client-dist/socket.io.js"></script> -->
 </svelte:head>
 
 <h1>Great success!</h1>
@@ -27,7 +37,7 @@
 		>Try editing this file (src/routes/index.svelte) to test live reloading.</strong
 	>
 </p>
-<button class="test">test</button>
+<button class="test" on:click={test}>test</button>
 
 <style lang="postcss">
 	h1,
