@@ -1,12 +1,6 @@
 <script>
-    export let videoDetails;
-    import Comments from "./Comments";
-    import Icon from "./smelte/Icon";
-    import Button from "./smelte/Button";
-    import { storeGetComments} from "../scripts/stores"
-	import { io } from "socket.io-client";
-	const socket = io();
-    let cols = 12;
+    export let item;
+    import { storeVideoId } from "../scripts/stores.js";
 
     function getDate(date) {
         let x = new Date(date).toDateString();
@@ -16,70 +10,54 @@
         let x = new Date(date).toLocaleTimeString();
         return x;
     }
-
-    function runPyComments() {
-        let id = videoDetails.id
-        console.log(`pyComments id ${id}`);
-        storeGetComments.set("runPyComments")
-        let getCommentsAddress = `youtube-comment-downloader --youtubeid ${id} --output ./data/${id}.json`
-        socket.emit("get comments", getCommentsAddress)
-        // childProcess(`"youtube-comment-downloader --youtubeid ${id} --output ${id}.json"`)
-    }
-    function activateVenv() {
-        let id = videoDetails.id
-        let venvCommand = `.\\venv\\Scripts\\activate`
-        socket.emit("activate venv", venvCommand)
-        // childProcess(`"youtube-comment-downloader --youtubeid ${id} --output ${id}.json"`)
-    }
-
-
 </script>
 
-<div
-    class="playlistItem grid row-start-auto grid-cols-12 px-4 pt-4 pb-8 border-b-8 border-cyan-700"
->
-    {#each Array(cols) as _, col}
-        <div>
-            <p>{col}</p>
-        </div>
-    {/each}
-    <img
-        class="thumbnail col-start-1 col-span-2"
-        src={videoDetails.snippet.thumbnails.default.url}
-        width={videoDetails.snippet.thumbnails.default.width}
-        height={videoDetails.snippet.thumbnails.default.height}
-    />
-    <h2 class="col-start-3 col-span-6 justify-self-start">
-        {videoDetails.snippet.title}
-    </h2>
-    <div class="col-start-9 col-span-2 flex-col">
-        <div class="flex flex-col">
-            <p>{getDate(videoDetails.snippet.publishedAt)}</p>
-            <p>{getTime(videoDetails.snippet.publishedAt)}</p>
-        </div>
-        <div class="flex">
-            <div>ID: {videoDetails.id}</div>
-        </div>
-    </div>
-    <!-- <div class="col-start-11"><Icon>code</Icon></div> -->
-    <div class="col-start-11">
-        <Button
-            on:click={runPyComments}
-            icon="speaker_notes"
-            color="amber"
-            add="text-left p-2"
-            remove="p-4"
-            iconClass="p-2">Get Comments</Button
-        >
-        <Button
-        on:click={activateVenv}
-        icon="speaker_notes"
-        color="amber"
-        add="text-left p-2"
-        remove="p-4"
-        iconClass="p-2">Activate Venv</Button
+{#if item.snippet.title != "deleted" || item.snippet.title != "private"}
+    <div
+        class="videoItem grid row-start-auto grid-cols-12 m-1"
+        on:click={() => {
+            let videoId = item.contentDetails.videoId;
+            console.log(`🚀 ~ file: PlaylistItem.svelte ~ line 11 ~ videoId`, videoId)
+            storeVideoId.set(videoId);
+        }}
     >
-
+        {#if item.snippet.thumbnails.default}
+            <img
+                class="thumbnail col-start-1 col-span-1"
+                src={item.snippet.thumbnails.default.url}
+                width={item.snippet.thumbnails.default.width}
+                height={item.snippet.thumbnails.default.height}
+            />
+        {/if}
+        <div class="col-start-2 col-span-5 justify-self-start">
+            {item.snippet.title}
+        </div>
+        <div class="col-start-7 col-span-2 justify-self-start">
+            {item.snippet.videoOwnerChannelTitle}
+        </div>
+        <div class="col-start-9 col-span-2 flex-col">
+            <p class="text-orange-500">Added to playlist:</p>
+            <p>{getDate(item.snippet.publishedAt)}</p>
+            <p>{getTime(item.snippet.publishedAt)}</p>
+        </div>
+        <div class="col-start-11 col-span-2 flex-col">
+            <p class="text-amber-500">Published to YouTube:</p>
+            <p>{getDate(item.contentDetails.videoPublishedAt)}</p>
+            <p>{getTime(item.contentDetails.videoPublishedAt)}</p>
+        </div>
     </div>
-</div>
-<Comments id={videoDetails.id} />
+{:else}
+    Video deleted or private
+{/if}
+
+<style>
+    .videoItem {
+        margin: 0.25rem;
+        cursor: pointer;
+        background: rgba(72, 35, 158, 0.1);
+        border: 1px solid rgba(72, 35, 158, 0.7);
+    }
+    .videoItem:hover {
+        background: rgba(0, 0, 0, 0.25);
+    }
+</style>

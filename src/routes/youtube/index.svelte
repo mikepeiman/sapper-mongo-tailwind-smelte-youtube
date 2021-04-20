@@ -9,7 +9,9 @@
     // import "smelte/src/tailwind.css";
     import Button from "../../components/smelte/Button";
     import ChannelDetails from "../../components/ChannelDetails.svelte";
-    import Video from "../../components/Video.svelte";
+    import VideoDetails from "../../components/VideoDetails.svelte";
+    import Video from "../../components/Video.svelte"
+    import Playlist from "../../components/Playlist.svelte";
     import lsget from "../../scripts/_lsget.js";
     import dateTime from "../../scripts/_dateTime.js"
     // const childProcess =  require("child_process")
@@ -35,8 +37,7 @@
     } from "../../scripts/stores.js";
     import { API_KEY } from "../../scripts/secret_keys.js";
     import { CLIENT_ID } from "../../scripts/secret_keys.js";
-    import PlaylistItem from "../../components/PlaylistItem.svelte";
-    import Playlist from "../../components/Playlist.svelte";
+
     import YouTubeItemsForm from "../../components/YouTubeItemsForm.svelte";
     import Pagination from "../../components/Pagination.svelte";
 
@@ -302,11 +303,11 @@
     {/if}
     {#if currentDisplayContext == "playlist"}
         {#each dateTime.sortByMostRecent(videosList) as item}
-            <PlaylistItem {item} />
+            <Video {item} />
         {/each}
     {/if}
     {#if currentDisplayContext == "videoDetails"}
-        <Video {videoDetails} on:message={processVideoMessage}/>
+        <VideoDetails {videoDetails} on:message={processVideoMessage}/>
     {/if}
 </div>
 
