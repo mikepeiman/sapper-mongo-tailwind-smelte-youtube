@@ -2,6 +2,21 @@
     export let playlist;
 
     import { storePlaylistId, storePlaylistName } from "../scripts/stores.js";
+
+    function getDateAndTime(date) {
+        let x = new Date(date).toLocaleString("en", { dateStyle: "short", timeStyle: "short"});
+        return x;
+    }
+    function getDate(date) {
+        let x = new Date(date).toDateString();
+        return x;
+    }
+    function getTime(date) {
+        let x = new Date(date).toLocaleTimeString();
+        return x;
+    }
+
+
 </script>
 
 <div
@@ -22,9 +37,7 @@
         {playlist.snippet.title}
     </div>
     <div class="col-start-10 col-span-3 flex-col">
-        Date: <div>{playlist.snippet.publishedAt}</div>
-        Id:
-        <div>{JSON.stringify(playlist.id)}</div>
+        <p class="text-cyan-600">Published {getDateAndTime(playlist.snippet.publishedAt)}</p>
     </div>
 </div>
 

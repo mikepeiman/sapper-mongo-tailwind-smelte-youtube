@@ -8,6 +8,11 @@
 	const socket = io();
     let cols = 12;
 
+
+    function getDateAndTime(date) {
+        let x = new Date(date).toLocaleString("en", { dateStyle: "short", timeStyle: "short"});
+        return x;
+    }
     function getDate(date) {
         let x = new Date(date).toDateString();
         return x;
@@ -54,8 +59,7 @@
     </h2>
     <div class="col-start-9 col-span-2 flex-col">
         <div class="flex flex-col">
-            <p>{getDate(videoDetails.snippet.publishedAt)}</p>
-            <p>{getTime(videoDetails.snippet.publishedAt)}</p>
+            <p>{getDateAndTime(videoDetails.snippet.publishedAt)}</p>
         </div>
         <div class="flex">
             <div>ID: {videoDetails.id}</div>

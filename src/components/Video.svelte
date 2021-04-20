@@ -2,6 +2,10 @@
     export let item;
     import { storeVideoId } from "../scripts/stores.js";
 
+    function getDateAndTime(date) {
+        let x = new Date(date).toLocaleString("en", { dateStyle: "short", timeStyle: "short"});
+        return x;
+    }
     function getDate(date) {
         let x = new Date(date).toDateString();
         return x;
@@ -37,13 +41,11 @@
         </div>
         <div class="col-start-9 col-span-2 flex-col">
             <p class="text-orange-500">Added to playlist:</p>
-            <p>{getDate(item.snippet.publishedAt)}</p>
-            <p>{getTime(item.snippet.publishedAt)}</p>
+            <p>{getDateAndTime(item.snippet.publishedAt)}</p>
         </div>
         <div class="col-start-11 col-span-2 flex-col">
             <p class="text-amber-500">Published to YouTube:</p>
-            <p>{getDate(item.contentDetails.videoPublishedAt)}</p>
-            <p>{getTime(item.contentDetails.videoPublishedAt)}</p>
+            <p>{getDateAndTime(item.contentDetails.videoPublishedAt)}</p>
         </div>
     </div>
 {:else}
