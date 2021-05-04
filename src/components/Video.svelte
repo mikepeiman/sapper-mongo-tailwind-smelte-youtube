@@ -55,6 +55,7 @@
 <style>
     .videoItem {
         margin: 0.25rem;
+        width: 100vw;
         cursor: pointer;
         background: rgba(72, 35, 158, 0.1);
         border: 1px solid rgba(72, 35, 158, 0.7);

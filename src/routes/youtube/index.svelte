@@ -176,6 +176,7 @@
             );
             // User is authorized and has clicked "Sign out" button.
             GoogleAuth.signOut();
+            setSigninStatus()
         } else {
             console.log(
                 `🚀 ~ file: YouTube_OAuth.svelte ~ line 97 ~ handleAuthClick ~ GoogleAuth`,
@@ -183,6 +184,7 @@
             );
             // User is not signed in. Start Google auth flow.
             GoogleAuth.signIn();
+            setSigninStatus()
         }
     }
 

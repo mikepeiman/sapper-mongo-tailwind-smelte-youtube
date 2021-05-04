@@ -8,6 +8,7 @@
         playlistsList,
         maxResults = 50;
     let pageInfo = {};
+    // let pagination = {}
     let pagesOfResults = 0;
     let pageToken = "";
     let videosList = [];
@@ -63,8 +64,14 @@
         console.log(
             `$storePagination.currentPageNumber: ${$storePagination.currentPageNumber}`
         );
-        let num = $storePagination.currentPageNumber
+        let num = 0
+        // $storePagination = pagination
+        if($storePagination.currentPageNumber){
+            num = $storePagination.currentPageNumber
+        }
+ 
         if (num >= 0 && num <=10) {
+            console.log(`🚀 ~ file: YouTubeItemsForm.svelte ~ line 68 ~ num`, num)
             doPagination();
         }
         console.log(
@@ -77,12 +84,14 @@
         let val = $storePagination;
         if (val.direction == "forward") {
             pageToken = $storeNextPageToken;
+            // todo must check if this token exists and do not duplicate it
             val.tokens.push(pageToken)
-            getCommentsFromVideoId($storeVideoId);
+            populateTokensList()
+            // getCommentsFromVideoId($storeVideoId);
         }
         if (val.direction == "back") {
             pageToken = val.tokens[val.currentPageNumber - 1] || "";
-            getCommentsFromVideoId($storeVideoId);
+            // getCommentsFromVideoId($storeVideoId);
         }
     }
 
@@ -94,12 +103,20 @@
     //  3.
 
     function populateTokensList() {
+        let id
         let ctx = $storeCurrentDisplayContext
+        console.log(`🚀 ~ file: YouTubeItemsForm.svelte ~ line 107 ~ populateTokensList ~ ctx`, ctx)
         if(ctx == "playlistsLists"){
             $storePagination[val]["playlistsLists"][id].push(pageToken)
+
         }
         if(ctx == "playlist"){
-            $storePagination[val]["playlist"][id].push(pageToken)
+            id = $storePlaylistId
+            console.log('%c⧭', 'color: #00a3cc', pageToken);
+            console.log('%c⧭', 'color: #00e600', id);
+            $storePagination.playlists.id = id
+            console.log('%c⧭', 'color: #aa00ff', $storePagination.playlists.id);
+            $storePagination.playlists.id.pageTokens.push(pageToken)
         }
         if(ctx == "videoDetails"){
             $storePagination[val]["videoDetails"][id].push(pageToken)
@@ -120,6 +137,7 @@
         videoDetails = lsget("videoDetails");
         videosList = lsget("videosList");
         playlistsList = lsget("playlistsList");
+        // pagination = lsget("pagination") ? lsget("pagination") : { currentPageNumber: 15}
     }
 
     let controlItems = {

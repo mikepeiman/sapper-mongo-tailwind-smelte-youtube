@@ -22,10 +22,10 @@ let pagination = writable({
     direction: "",
     tokens: [""],
     currentPageNumber: 0,
-    "playlists": [{
+    "playlists": {
         id: "",
         pageTokens: [""]
-    }],
+    },
     "comments": {}
 })
 

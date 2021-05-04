@@ -8,6 +8,6 @@ export default function lsget(item) {
         }
 
     } else {
-        return `${item} not found in ls`;
+        return false;
     }
 }
